@@ -1,0 +1,19 @@
+# Diagramme de cas d’utilisation – World News
+
+Acteurs :
+- Journaliste
+- Lecteur
+
+Cas d’utilisation principaux :
+- [Journaliste] Créer un article
+- [Journaliste] Lister ses articles
+- [Journaliste] Éditer un article
+- [Lecteur] Lister les articles récents
+- [Lecteur] Lire un article complet
+
+Relations :
+- Un journaliste peut créer, éditer, lister ses articles
+- Un lecteur peut lister et lire les articles
+
+
+(UML/Umlet : Acteurs à gauche/droite, cas d’utilisation au centre, relier chaque acteur à ses cas d’utilisation)

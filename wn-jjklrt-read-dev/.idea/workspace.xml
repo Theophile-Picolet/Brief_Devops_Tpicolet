@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3ae83bc1-08a2-4aca-bb96-6f155c4a9380" name="Changes" comment="feat: navigation par ID et page À propos&#10;&#10;- Refactor: utilisation d'IDs numériques pour les articles au lieu des titres&#10;- Feat: création de la page À propos avec présentation de l'équipe&#10;- Style: amélioration du design avec layout et responsive&quot;">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/back/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/code/controller/articleController.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back/code/controller/articleController.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/code/router/articleRouter.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back/code/router/articleRouter.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/code/service/articleService.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back/code/service/articleService.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/back/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/(read)/articles/[details]/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/(read)/articles/[details]/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/(read)/articles/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/(read)/articles/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/app/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/front/app/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/front/package-lock.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="3716p8Y1DG7bdawvnssR1SAB1RK" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "Merging 8-us5-lire-un-article-complet-front-2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "C:\\Users\\Utilisateur.IDF-PC-PC192VLE\\Documents\\briefNewWorld\\wn-jjklrt-read\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-WS-252.27397.92" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3ae83bc1-08a2-4aca-bb96-6f155c4a9380" name="Changes" comment="refactor: Ajustements configuration API" />
+      <created>1766058414088</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1766058414088</updated>
+      <workItem from="1766058418427" duration="4259000" />
+      <workItem from="1766064748928" duration="5310000" />
+      <workItem from="1766133625146" duration="9709000" />
+    </task>
+    <task id="LOCAL-00001" summary="refactor: Ajustements configuration API">
+      <option name="closed" value="true" />
+      <created>1766137342882</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1766137342882</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: navigation par ID et page À propos&#10;&#10;- Refactor: utilisation d'IDs numériques pour les articles au lieu des titres&#10;- Feat: création de la page À propos avec présentation de l'équipe&#10;- Style: amélioration du design avec layout et responsive&quot;">
+      <option name="closed" value="true" />
+      <created>1766145637475</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1766145637475</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refactor: Ajustements configuration API" />
+    <MESSAGE value="feat: navigation par ID et page À propos&#10;&#10;- Refactor: utilisation d'IDs numériques pour les articles au lieu des titres&#10;- Feat: création de la page À propos avec présentation de l'équipe&#10;- Style: amélioration du design avec layout et responsive&quot;" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: navigation par ID et page À propos&#10;&#10;- Refactor: utilisation d'IDs numériques pour les articles au lieu des titres&#10;- Feat: création de la page À propos avec présentation de l'équipe&#10;- Style: amélioration du design avec layout et responsive&quot;" />
+  </component>
+</project>

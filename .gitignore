@@ -1,0 +1,16 @@
+# Ignorer les fichiers d'environnement sensibles
+.env
+wn-jjklrt-read-dev/back/.env
+wn-jjklrt-write-dev/write-back/.env
+
+# Ignorer les dépendances Node.js
+node_modules/
+wn-jjklrt-read-dev/back/node_modules/
+wn-jjklrt-read-dev/front/node_modules/
+wn-jjklrt-write-dev/write-back/node_modules/
+wn-jjklrt-write-dev/write-front/node_modules/
+
+# Ignorer les dossiers de build
+wn-jjklrt-write-dev/write-back/build/
+wn-jjklrt-read-dev/back/build/
+

@@ -1,0 +1,15 @@
+# Diagramme de composants – Architecture World News
+
+Composants :
+- Microfrontend Journaliste
+- Microfrontend Lecteur
+- Microservice WRITE
+- Microservice READ
+- Base de données PostgreSQL
+
+Relations :
+- Les microfrontends communiquent avec les microservices via API REST (JSON)
+- Les microservices accèdent à la base de données
+- Séparation stricte READ/WRITE
+
+(UML/Umlet : chaque composant en rectangle, flèches pour les communications)

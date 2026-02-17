@@ -1,0 +1,49 @@
+Todo list (pour chaque groupe)
+
+Créer les équipes (2)
+Rituels
+Créer les repositories
+Stratégie de branches (pas de code sur main)
+Où ? => organisation sur le compte "simplon-alt-dist-p7"
+Bien les nommer
+"wn-group-ms1" (3 couches logiques)
+"wn-group-ms2" (3 couches logiques)
+"msX" à remplacer par ce que fait chaque repo
+World News
+Privé
+README + licence
+.gitignore
+Créer les boards pour chaque équipe
+Un pour les PO
+Un pour les devs
+Vérifier/penser aux accès (repo, boards)
+Règles communes
+
+Persona
+Choix de la stack
+
+Plus tard...
+Product Owner :
+Communiquer les besoins métiers
+Priorités
+
+PO + Dev :
+Use case / User stories
+Estimation
+MCD initial
+Problématique de la bdd commune
+Wireframes, charte graphique
+...
+Analyser les besoins et vérifier le niveau de compréhension quantitatif et qualitatif
+Prioriser
+Estimer (temps / complexité)
+Découper les features en taches de dev + "assigner" les taches
+Cloner les repos, Initialiser le projets, gérer les variables d'environnement
+Conception de la base de données (dictionnaire, MCD, MLD, MPD)
+Conception de l'interface utilisateur (zoning, wireframe, charte graphique)
+Conception des APIs (verbes, nommage...
+Précisions supplémentaires (pour le moment...) :
+Pas d'authentification
+Pas d'I18N (InternationalisatioN)
+En français dans l'ensemble du projet => formats d'affichage respecte le format en français
+Responsive (fluide)

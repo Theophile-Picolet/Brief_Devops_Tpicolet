@@ -1,0 +1,34 @@
+/* je souhaite créer une navbar verticale sur le coté gauche de mon application avec les éléments suivants :
+ - articles ( qui est la page principale et qui redirige vers / avec tous les articles affficés)
+ - Rechercher( qui redirige vers une page de recherche avec un input de recherche)
+ - Ajouter ( qui redirige vers une page d'ajout d'article avec un formulaire)
+ - Modifier ( qui redirige vers une page de modification d'article avec un formulaire)
+ - Supprimer ( qui redirige vers une page de suppression d'article avec un formulaire) */
+
+.navbar {
+  width: 250px;
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.navItem {
+  color: var(--color-a);
+  font-weight: var(--fontweight-semibold);
+  padding: 8px 12px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  border: 1px solid var(--color-border);
+}
+
+.navItem:hover {
+  background-color: var(--color-a-hover);
+  color: var(--color-text);
+  cursor: pointer;
+}

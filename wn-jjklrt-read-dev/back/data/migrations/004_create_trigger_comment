@@ -1,0 +1,21 @@
+-- Supprimer le trigger s'il existe déjà
+-- DROP TRIGGER IF EXISTS refresh_commentaires_lecture_trigger ON reader.comments;
+
+-- Supprimer la fonction si elle existe déjà
+-- DROP FUNCTION IF EXISTS reader.refresh_commentaires_lecture();
+
+-- Créer la fonction de rafraîchissement
+CREATE FUNCTION reader.refresh_commentaires_lecture()
+RETURNS trigger AS $$
+BEGIN
+  REFRESH MATERIALIZED VIEW reader.commentaires_lecture;
+  RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Créer le trigger qui rafraîchit la vue après chaque insertion
+CREATE TRIGGER refresh_commentaires_lecture_trigger
+AFTER INSERT
+ON reader.comments
+FOR EACH STATEMENT
+EXECUTE FUNCTION reader.refresh_commentaires_lecture();

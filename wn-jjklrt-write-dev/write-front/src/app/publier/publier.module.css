@@ -1,0 +1,113 @@
+.publierForm {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.publierForm form {
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  width: fit-content;
+  gap: 0.5rem;
+  padding: 40px;
+  background: white;
+  border-radius: var(--border-radius-l);
+  border: 1px solid var(--color-border);
+}
+
+.publierForm h1 {
+  margin-bottom: 2rem;
+}
+
+.publierForm p {
+  margin-bottom: 1rem;
+  font-family: var(--font-text);
+  font-weight: var(--fontweight-semibold);
+  color: var(--color-text);
+}
+
+.publierForm label {
+  font-family: var(--font-title);
+  font-weight: var(--fontweight-semibold);
+  color: var(--color-text);
+}
+
+.publierForm input,
+.publierForm textarea {
+  font-family: var(--font-text);
+  font-weight: var(--fontweight-medium);
+  color: var(--color-text);
+  margin-bottom: 1rem;
+}
+
+.publierForm input {
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
+  border-radius: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 15px;
+}
+
+/* je souhaite changer la bordure quand je click sur un input et non pas le hover */
+.publierForm input:focus,
+.publierForm textarea:focus {
+  border: 1px solid var(--color-text);
+  outline: none;
+}
+
+.publierForm textarea {
+  border: 1px solid var(--color-border);
+  background: var(--color-input);
+  border-radius: 10px;
+  width: 100%;
+  height: 150px;
+  padding: 10px 12px;
+  font-size: 15px;
+  resize: vertical;
+}
+
+.publierForm button {
+  width: fit-content;
+  margin-left: auto;
+  margin-right: 0;
+  padding: 8px 20px;
+  background-color: var(--color-btn);
+  color: white;
+  font-family: var(--font-text);
+  font-weight: var(--fontweight-semibold);
+  letter-spacing: 0.5px;
+  border: none;
+  border-radius: var(--border-radius-m);
+  cursor: pointer;
+}
+
+.publierForm button:hover {
+  background-color: var(--color-btn-hover);
+}
+
+.message {
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.success {
+  color: var(--color-btn-hover);
+  border: 1px solid blue;
+  padding: 10px;
+  border-radius: var(--border-radius-s);
+  background: #f0f8ff;
+}
+
+.error {
+  padding: 10px;
+  border-radius: var(--border-radius-s);
+  color: #a10000;
+  background: #fff2f2;
+  border: 1px solid #fcc;
+}

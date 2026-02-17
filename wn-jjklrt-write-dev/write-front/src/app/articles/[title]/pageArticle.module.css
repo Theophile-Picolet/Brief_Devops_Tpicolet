@@ -1,0 +1,46 @@
+.containerAritcle{
+  width: 80vw;
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardArticle{
+  text-align: center;
+  color: black;
+  background-color: white;
+}
+
+.title{
+  color: white;
+  margin-bottom: 40px;
+  background-color: black;
+  padding-left: 100px;
+  padding-right: 100px;
+  border-radius: 20px ;
+}
+
+.cardArticle{
+  height: 400px;
+  width: 500px;
+  text-align: center;
+
+}
+
+.image{
+  height: 50%;
+  background-color: black;
+
+}
+
+.articleText{
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  text-align: left;        
+  padding: 16px; 
+  gap: 10px;        
+  
+}

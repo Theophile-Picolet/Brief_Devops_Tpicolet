@@ -1,0 +1,112 @@
+.editerPage {
+  padding: 2rem;
+  width: 50%;
+  background-color: var(--color-background);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 0 auto;
+}
+
+.editerPage h1 {
+  font-family: var(--font-title);
+  font-weight: var(--fontweight-bold);
+  color: var(--color-text);
+}
+
+.card input:focus,
+.card textarea:focus {
+  outline: none;
+  border-color: 1px solid var(--color-text);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 40px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-l);
+  background: #fff;
+}
+
+.card label {
+  font-family: var(--font-title);
+  font-weight: var(--fontweight-semibold);
+}
+
+.inline {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.card input,
+.card textarea {
+  width: 100%;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+  background: #f9f9f9;
+}
+
+.card textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.card button {
+  align-self: flex-end;
+  padding: 8px 20px;
+  background: var(--color-btn);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s ease;
+}
+
+.card button:disabled {
+  background: #b5b5b5;
+  cursor: not-allowed;
+}
+
+.card button:not(:disabled):hover {
+  background: var(--color-btn-hover);
+}
+
+.card .chargerButton {
+  margin-left: auto;
+  margin-right: 0;
+  padding: 8px 20px;
+  background: var(--color-btn);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: background 0.2s ease;
+}
+
+.card .chargerButton:disabled {
+  background: #b5b5b5;
+  cursor: not-allowed;
+}
+
+.card .chargerButton:not(:disabled):hover {
+  background: var(--color-btn-hover);
+}
+
+.status {
+  color: var(--color-a);
+}
+
+.error {
+  color: #a10000;
+  background: #fff2f2;
+  border: 1px solid #ffcccc;
+  border-radius: 8px;
+  padding: 10px;
+}

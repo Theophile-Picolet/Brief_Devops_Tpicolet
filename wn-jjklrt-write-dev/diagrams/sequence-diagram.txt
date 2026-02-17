@@ -1,0 +1,21 @@
+# Diagramme de séquence – Création d’un article
+
+Journaliste → Frontend Journaliste → Microservice WRITE → BDD
+
+1. Le journaliste saisit un article (formulaire)
+2. Le frontend envoie la requête POST /articles (JSON)
+3. Le microservice WRITE valide, enregistre l’article, génère la date
+4. La BDD stocke l’article
+5. Le microservice WRITE répond (succès/erreur)
+6. Le frontend affiche la confirmation
+
+# Diagramme de séquence – Lecture d’un article
+
+Lecteur → Frontend Lecteur → Microservice READ → BDD
+
+1. Le lecteur sélectionne un article
+2. Le frontend envoie GET /articles/:id
+3. Le microservice READ récupère l’article
+4. La BDD retourne l’article
+5. Le microservice READ renvoie l’article au frontend
+6. Le frontend affiche l’article

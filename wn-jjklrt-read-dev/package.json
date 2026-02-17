@@ -1,0 +1,34 @@
+{
+  "name": "wn-jjklrt-read",
+  "version": "1.0.0",
+  "description": "<!-- to be completed -->",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node-dev src/server.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/simplon-alt-dist-p7/wn-jjklrt-read.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/simplon-alt-dist-p7/wn-jjklrt-read/issues"
+  },
+  "homepage": "https://github.com/simplon-alt-dist-p7/wn-jjklrt-read#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1",
+    "pg": "^8.17.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.0.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}

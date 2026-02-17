@@ -1,0 +1,73 @@
+<mxfile host="65bd71144e">
+    <diagram id="Kd-ttxUAGcvhAirbxQK2" name="Page-1">
+        <mxGraphModel dx="1012" dy="1766" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="2" value="&lt;b&gt;ARTICLES&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="50" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Sous-titre" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="130" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Châpeau" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="160" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="6" value="&lt;u&gt;titres&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="100" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="7" value="corps" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="190" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="8" value="date de publication" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="220" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="MCD" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="-50" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="&lt;b&gt;ARTICLES&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="400" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="11" value="Sous-titre VARCHAR 300" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="480" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="12" value="Châpeau VARCHAR 1000" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="510" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="&lt;u&gt;titres VARCHAR 300&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="450" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="corps VARCHAR 1000" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="540" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="15" value="date de publication current timestamp" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="570" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="16" value="MLD" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="305" y="320" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="17" value="MLD" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="300" y="660" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="18" value="&lt;b&gt;ARTICLES&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="750" width="240" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="19" value="Sous-titre VARCHAR 300 not null" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="830" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="20" value="Châpeau VARCHAR 1000 not null" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="860" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="21" value="&lt;u&gt;titres VARCHAR 300 unique not null primary key&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="800" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="22" value="corps VARCHAR 10000 not null" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="890" width="240" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="date de publication current timestamp" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                    <mxGeometry x="240" y="920" width="240" height="30" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
