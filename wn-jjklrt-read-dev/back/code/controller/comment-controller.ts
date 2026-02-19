@@ -28,7 +28,7 @@ const addComment: RequestHandler = async (req, res, next) => {
   try {
     // Récupère l'article pour obtenir published_at
     const article = await CommentRepository.getArticleByTitle(articleTitle);
-    
+
     if (!article) {
       return res.status(404).json({ error: "Article non trouvé" });
     }

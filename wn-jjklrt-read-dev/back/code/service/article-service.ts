@@ -1,13 +1,12 @@
 import { pool } from "../database/db";
 
 interface Article {
-
-  title: string,
-  sub_title: string,
-  article_lead: string,
-  body: string,
-  published_at: Date,
-  category?: string,
+  title: string;
+  sub_title: string;
+  article_lead: string;
+  body: string;
+  published_at: Date;
+  category?: string;
 }
 
 class ArticleRepository {
@@ -30,7 +29,10 @@ class ArticleRepository {
 
   // readByCategory du crud //
   async readByCategory(category: string): Promise<Article[] | null> {
-    const result = await pool.query<Article>("SELECT * FROM reader.articles_lecture WHERE categorie = $1", [category]);
+    const result = await pool.query<Article>(
+      "SELECT * FROM reader.articles_lecture WHERE categorie = $1",
+      [category],
+    );
     return result.rows;
   }
 }

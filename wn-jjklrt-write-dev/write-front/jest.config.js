@@ -12,6 +12,7 @@ const customJestConfig = {
     "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   testMatch: ["**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)"],
+  testPathIgnorePatterns: ["/node_modules/", "/tests/"],
 };
 
 module.exports = createJestConfig(customJestConfig);

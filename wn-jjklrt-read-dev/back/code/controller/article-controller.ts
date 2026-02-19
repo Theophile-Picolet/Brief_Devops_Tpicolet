@@ -5,15 +5,14 @@ import ArticleRepository from "../service/article-service";
 
 //----------------------------------------------------------------------------------//
 // browse du bread //
-const browse: RequestHandler = async (req, res, next) => {
+const browse: RequestHandler = async (_req, res, next) => {
   try {
     const articles = await ArticleRepository.read();
     res.status(200).json(articles);
-  }
-  catch (err) {
+  } catch (err) {
     next(err);
   }
-}
+};
 
 // read du bread //
 const readByTitle: RequestHandler = async (req, res, next) => {
@@ -25,11 +24,10 @@ const readByTitle: RequestHandler = async (req, res, next) => {
       return;
     }
     res.status(200).json(article);
-  }
-  catch (err) {
+  } catch (err) {
     next(err);
   }
-}
+};
 
 const readByCategory: RequestHandler = async (req, res, next) => {
   const category = req.params.category;
@@ -40,16 +38,13 @@ const readByCategory: RequestHandler = async (req, res, next) => {
       return;
     }
     res.status(200).json(article);
-  }
-  catch (err) {
+  } catch (err) {
     next(err);
   }
-}
-
-
+};
 
 export default {
   browse,
   readByTitle,
-  readByCategory
-}
+  readByCategory,
+};

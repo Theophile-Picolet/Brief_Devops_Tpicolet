@@ -5,31 +5,29 @@ import ArticleRepository from "../services/article-service";
 
 //----------------------------------------------------------------------------------//
 // browse du bread //
-const browse: RequestHandler = async (req, res, next)=> {
+const browse: RequestHandler = async (_req, res, next) => {
   try {
     const articles = await ArticleRepository.read();
     res.status(200).json(articles);
-  }
-  catch (err) {
+  } catch (err) {
     next(err);
   }
-}
+};
 
 // read du bread //
-const readByTitle: RequestHandler = async (req, res, next)=> {
+const readByTitle: RequestHandler = async (req, res, next) => {
   const title = req.params.title;
   try {
     const article = await ArticleRepository.readByTitle(title);
-    if(!article){
+    if (!article) {
       res.status(404).json({ message: "aucun article correspond" });
       return;
     }
     res.status(200).json(article);
-  } 
-  catch (err) {
+  } catch (err) {
     next(err);
   }
-}
+};
 
 // edit du bread //
 const update: RequestHandler = async (req, res, next) => {
@@ -59,26 +57,25 @@ const update: RequestHandler = async (req, res, next) => {
 };
 
 // add du bread //
-const add: RequestHandler = async (req, res, next)=> {
+const add: RequestHandler = async (req, res, next) => {
   try {
-    const article ={
+    const article = {
       title: req.body.title,
       sub_title: req.body.sub_title,
       article_lead: req.body.article_lead,
       body: req.body.body,
       categorie: req.body.categorie,
-      published_at: req.body.published_at
-    }
+      published_at: req.body.published_at,
+    };
     const articleTitle = await ArticleRepository.create(article);
     res.status(201).json({ title: articleTitle });
-  }
-  catch (err) {
+  } catch (err) {
     next(err);
   }
 };
 
 // delete du bread //
-const destroy: RequestHandler = async (req, res, next)=> {
+const destroy: RequestHandler = async (req, res, next) => {
   const title = req.params.title;
   try {
     const article = await ArticleRepository.readByTitle(title);
@@ -104,15 +101,17 @@ const softDelete: RequestHandler = async (req, res, next) => {
   const title = req.params.title;
   try {
     const deleted = await ArticleRepository.softDelete(title);
-    if(!deleted) {
-      res.status(404).json({ message : "Aucun article supprimé ou déjà supprimé"});
+    if (!deleted) {
+      res
+        .status(404)
+        .json({ message: "Aucun article supprimé ou déjà supprimé" });
       return;
     }
     res.status(200).json({ message: "article mis de coté avec succes" });
   } catch (err) {
     next(err);
   }
-}
+};
 
 export default {
   add,
@@ -121,4 +120,4 @@ export default {
   update,
   destroy, // hard-delete (optionnel)
   softDelete, // soft-delete (suppression logique)
-}
+};

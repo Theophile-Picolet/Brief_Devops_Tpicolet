@@ -1,5 +1,9 @@
 import "dotenv/config";
-import express, { NextFunction, Request, Response } from "express";
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from "express";
 import "./database/checkConnection";
 import articlesRouter from "./router/articleRouter";
 
@@ -22,7 +26,7 @@ app.use(express.json());
 // route articles
 app.use(articlesRouter);
 
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: "Something went wrong!" });
 });

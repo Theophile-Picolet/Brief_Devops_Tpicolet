@@ -1,7 +1,8 @@
 "use client";
-import Card from "@/components/articles/card";
 import { useEffect, useState } from "react";
+import Card from "@/components/articles/card";
 import styles from "./articles.module.css";
+
 type Article = {
   title: string;
   sub_title: string;
@@ -28,7 +29,11 @@ export default function Articles() {
   return (
     <div className={styles.publierPage}>
       <h1>Vos Articles</h1>
-      {articles ? <Card articles={articles} /> : <div>Pas d'articles pour le moment </div>}
+      {articles ? (
+        <Card articles={articles} />
+      ) : (
+        <div>Pas d'articles pour le moment </div>
+      )}
     </div>
   );
 }

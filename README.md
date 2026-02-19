@@ -180,7 +180,121 @@ Les tests E2E sont situés dans le dossier `tests/` et utilisent Playwright pour
 - Nettoyez la base de données si besoin avant/après les tests pour éviter les doublons.
 
 ---
+## ⚠️ Nuances importantes et résolutions de problèmes
 
+### Séparation des tests : Jest vs Playwright
+
+**Problème identifié** : Par défaut, Jest essayait d'exécuter les tests Playwright (fichiers `.spec.ts` dans `tests/`), ce qui causait des erreurs de compatibilité.
+
+**Solution** : Configuration Jest pour ignorer les tests E2E.
+
+Dans `wn-jjklrt-write-dev/write-front/jest.config.js` :
+```javascript
+testPathIgnorePatterns: ["/node_modules/", "/tests/"]
+```
+
+**Résultat** :
+- `npm test` → Lance **uniquement** les tests unitaires Jest (fichiers `.test.tsx` dans `src/`)
+- `npx playwright test` → Lance **uniquement** les tests E2E Playwright (fichiers `.spec.ts` dans `tests/`)
+
+### Tests E2E : Docker doit être lancé
+
+**Important** : Les tests Playwright nécessitent que l'application soit en cours d'exécution via Docker.
+
+Workflow correct :
+```bash
+# 1. Démarrer Docker
+docker compose up -d
+
+# 2. Attendre que les services soient prêts (quelques secondes)
+
+# 3. Lancer les tests E2E
+npx playwright test
+```
+
+Si Docker n'est pas lancé, les tests échoueront avec des erreurs du type `element(s) not found`.
+
+### Gestion des éléments multiples dans les tests
+
+**Problème** : Sur la page `/edit`, il y a **2 formulaires** qui affichent le même message de succès "Article mis à jour", ce qui causait une erreur `Found multiple elements`.
+
+**Solution** : Utiliser `getAllByText` et sélectionner le dernier élément.
+
+Dans les tests unitaires Jest :
+```tsx
+// ❌ Avant
+expect(screen.getByText(/Article mis à jour/i)).toBeInTheDocument();
+
+// ✅ Après
+const messages = screen.getAllByText(/Article mis à jour/i);
+expect(messages[messages.length - 1]).toBeInTheDocument();
+```
+
+Dans les tests E2E Playwright :
+```typescript
+// ❌ Avant
+await expect(page.locator("text=/Article mis à jour/")).toBeVisible();
+
+// ✅ Après
+await expect(page.locator("text=/Article mis à jour/").last()).toBeVisible();
+```
+
+### Routes API : Éviter la duplication /api/api/
+
+**Problème identifié** : Les routes étaient définies avec `/api/articles` dans `router.ts`, mais le router était monté avec `app.use("/api", router)` dans `index.ts`, créant des URLs en `/api/api/articles` au lieu de `/api/articles`.
+
+**Solution** : Retirer le préfixe `/api` des routes individuelles.
+
+Dans `wn-jjklrt-write-dev/write-back/src/routes/router.ts` :
+```typescript
+// ✅ Correct
+router.post("/articles", validateArticle, Article.add);
+router.get("/articles", Article.browse);
+router.get("/articles/:title", Article.readByTitle);
+// etc.
+```
+
+Et dans `index.ts` :
+```typescript
+app.use("/api", router); // Le préfixe /api est ajouté ici
+```
+
+### Typage TypeScript strict avec PostgreSQL
+
+**Problème** : L'utilisation de `QueryResult<unknown>` causait des erreurs de compilation TypeScript lors du build Docker :
+```
+error TS2344: Type 'unknown' does not satisfy the constraint 'QueryResultRow'
+```
+
+**Solution** : Utiliser `QueryResultRow` au lieu de `unknown`.
+
+Dans les fichiers de configuration DB (`db.ts`, `client.ts`) :
+```typescript
+import type { Pool as PgPool, QueryResult, QueryResultRow } from "pg";
+
+type Result = QueryResult<QueryResultRow>;
+type Rows = QueryResultRow[];
+```
+
+Cette modification garantit la compatibilité avec les contraintes de types de PostgreSQL tout en maintenant la sécurité des types.
+
+### Lint-staged : Fichiers stagés uniquement
+
+**Important** : Le hook `pre-commit` via `lint-staged` ne vérifie **que les fichiers modifiés/stagés**, pas l'ensemble du code.
+
+**Conséquence** : Il est possible de faire un commit réussi même si d'autres fichiers non modifiés contiennent des erreurs de lint.
+
+**Pour vérifier tout le code** :
+```bash
+npm run lint  # Vérifie TOUS les fichiers de tous les services
+```
+
+**Distinction importante** :
+- `git commit` → Vérifie uniquement les fichiers modifiés
+- `npm run lint` → Vérifie tous les fichiers du projet
+- `git push` → Lance tous les tests unitaires (pas de lint complet)
+
+---
 ## Récapitulatif des commandes utiles
 
 ### Docker
@@ -221,13 +335,15 @@ Les tests E2E sont situés dans le dossier `tests/` et utilisent Playwright pour
 
 ---
 
-## À faire / Problèmes connus
+## À faire / Amélioration continue
 
-- [ ] Vérifier la logique de recherche et d’édition d’article côté backend writer (problème de non-retrouvabilité d’article lors des tests E2E)
 - [ ] Ajouter un nettoyage automatique de la base avant/après les tests E2E si besoin
-- [ ] Compléter la documentation sur les hooks, CI/CD, déploiement
+- [ ] Compléter la documentation sur le déploiement en production
+- [x] ~~Vérifier la logique de recherche et d'édition d'article côté backend writer~~ → Résolu (correction des routes /api)
+- [x] ~~Résoudre les conflits entre tests Jest et Playwright~~ → Résolu (testPathIgnorePatterns)
+- [x] ~~Corriger le typage TypeScript pour QueryResult~~ → Résolu (QueryResultRow)
 
-N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet (hooks, CI/CD, déploiement, etc.).
+N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet.
 
 ## Qualité de code : Biome & Husky
 

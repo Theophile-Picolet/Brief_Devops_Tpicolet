@@ -1,13 +1,15 @@
 import dotenv from "dotenv";
+
 dotenv.config();
+
+import type { Pool as PgPool, QueryResult, QueryResultRow } from "pg";
 // Import pg for PostgreSQL
 import { Pool } from "pg";
-import type { Pool as PgPool, QueryResult } from "pg";
 
 console.log("Chargement client.ts");
 const DB_USER = process.env.DB_USER;
 const DB_NAME = process.env.DB_NAME;
-const DB_PASSWORD = process.env.DB_PASSWORD;
+const _DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 
@@ -29,7 +31,7 @@ const client = new Pool({
 export default client;
 
 type Pg = PgPool;
-type Result = QueryResult<any>;
-type Rows = any[];
+type Result = QueryResult<QueryResultRow>;
+type Rows = QueryResultRow[];
 
 export type { Pg, Result, Rows };

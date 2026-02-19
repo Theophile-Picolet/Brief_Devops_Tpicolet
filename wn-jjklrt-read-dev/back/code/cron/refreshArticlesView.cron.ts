@@ -1,18 +1,19 @@
 // config du Cron: rafraîchissement de la vue des articles
 
-import cron from 'node-cron';
-import { pool } from '../database/db';
+import cron from "node-cron";
+import { pool } from "../database/db";
 
 export function scheduleArticlesViewRefresh() {
-  cron.schedule('*/10 * * * *', async () => { // Toutes les 10 minutes
+  cron.schedule("*/10 * * * *", async () => {
+    // Toutes les 10 minutes
     try {
-      console.log('[CRON] Refresh de la vue matérialisée...');
+      console.log("[CRON] Refresh de la vue matérialisée...");
       await pool.query(
-        'REFRESH MATERIALIZED VIEW reader.articles_lecture;' // Ajustez le nom de la vue selon notre schéma Lecteur
+        "REFRESH MATERIALIZED VIEW reader.articles_lecture;", // Ajustez le nom de la vue selon notre schéma Lecteur
       );
-      console.log('[CRON] Refresh terminé avec succès');
+      console.log("[CRON] Refresh terminé avec succès");
     } catch (error) {
-      console.error('[CRON] Erreur lors du refresh', error);
+      console.error("[CRON] Erreur lors du refresh", error);
     }
   });
 }

@@ -61,7 +61,8 @@ describe("Edit component", () => {
     await userEvent.type(editTitreInput, "Titre modifié");
     await userEvent.click(screen.getByText("Enregistrer les modifications"));
     await waitFor(() => {
-      expect(screen.getByText(/Article mis à jour/i)).toBeInTheDocument();
+      const messages = screen.getAllByText(/Article mis à jour/i);
+      expect(messages[messages.length - 1]).toBeInTheDocument();
     });
   });
 });

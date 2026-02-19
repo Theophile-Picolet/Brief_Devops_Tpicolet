@@ -1,9 +1,10 @@
+import type { PoolClient } from "pg";
 import pool from "./db";
 
 // Try to get a connection to the database
 pool
   .connect()
-  .then((connection: any) => {
+  .then((connection: PoolClient) => {
     console.info(`Using database ${process.env.DB_NAME}`);
     connection.release();
   })
@@ -15,5 +16,3 @@ pool
     );
     console.warn(error.message);
   });
-
-

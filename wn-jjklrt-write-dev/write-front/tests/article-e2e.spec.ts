@@ -56,8 +56,8 @@ test("Éditer un article existant", async ({ page }) => {
   );
   await saveButton.waitFor({ state: "visible", timeout: 5000 });
   await saveButton.click();
-  // Attendre le message de confirmation
-  await expect(page.locator("text=/Article mis à jour/")).toBeVisible({
+  // Attendre le message de confirmation (dernier élément car il y a 2 formulaires)
+  await expect(page.locator("text=/Article mis à jour/").last()).toBeVisible({
     timeout: 10000,
   });
   console.log("✅ Article modifié avec succès");
