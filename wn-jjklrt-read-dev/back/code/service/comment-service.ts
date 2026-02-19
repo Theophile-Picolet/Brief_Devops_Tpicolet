@@ -15,7 +15,7 @@ class CommentRepository {
     description: string,
   ) {
     const result = await pool.query(
-      `INSERT INTO reader.comments (article_title, article_published_at, description) VALUES ($1, $2, $3) RETURNING id, created_at`,
+      `INSERT INTO reader.comments (article_title, article_published_at, description) VALUES ($1, $2, $3) RETURNING id, article_title, article_published_at, description, created_at`,
       [articleTitle, articlePublishedAt, description],
     );
     return result.rows[0];

@@ -35,10 +35,15 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 const port = process.env.PORT;
 
 // Start the server and listen on the specified port
-app
-  .listen(port, () => {
-    console.info(`Server is listening on port ${port}`);
-  })
-  .on("error", (err: Error) => {
-    console.error("Error:", err.message);
-  });
+// Ne démarre le serveur que si ce n'est pas un environnement de test
+if (process.env.NODE_ENV !== "test") {
+  app
+    .listen(port, () => {
+      console.info(`Server is listening on port ${port}`);
+    })
+    .on("error", (err: Error) => {
+      console.error("Error:", err.message);
+    });
+}
+
+export default app;

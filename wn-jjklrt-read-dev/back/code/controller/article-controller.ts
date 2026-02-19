@@ -33,7 +33,7 @@ const readByCategory: RequestHandler = async (req, res, next) => {
   const category = req.params.category;
   try {
     const article = await ArticleRepository.readByCategory(category);
-    if (!article) {
+    if (!article || (Array.isArray(article) && article.length === 0)) {
       res.status(404).json({ message: "aucun article correspond" });
       return;
     }

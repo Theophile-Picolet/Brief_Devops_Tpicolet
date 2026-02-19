@@ -9,7 +9,6 @@ import { Pool } from "pg";
 console.log("Chargement client.ts");
 const DB_USER = process.env.DB_USER;
 const DB_NAME = process.env.DB_NAME;
-const _DB_PASSWORD = process.env.DB_PASSWORD;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 

@@ -214,6 +214,159 @@ npx playwright test
 
 Si Docker n'est pas lancé, les tests échoueront avec des erreurs du type `element(s) not found`.
 
+---
+
+## Tests automatisés Reader
+
+### Backend Reader
+
+Le backend Reader (`wn-jjklrt-read-dev/back`) dispose de tests d'intégration API couvrant tous les endpoints.
+
+#### Installation des dépendances de test
+
+Les dépendances de test (Jest, Supertest, ts-jest) sont incluses dans le `package.json` :
+
+```bash
+cd wn-jjklrt-read-dev/back
+npm install
+```
+
+#### Lancer les tests
+
+Pour exécuter tous les tests d'intégration :
+
+```bash
+npm test
+```
+
+Cette commande lance Jest avec l'environnement de test configuré (`NODE_ENV=test`).
+
+#### Tests d'intégration API (10 tests)
+
+Le fichier `code/routes/article-api.test.ts` contient 10 tests couvrant :
+
+**Scénarios de succès (5 tests)** :
+- GET `/api/articles` - Récupération de tous les articles (200)
+- GET `/api/articles/:title` - Récupération d'un article par titre (200)
+- GET `/api/articles/category/:category` - Filtrage par catégorie (200)
+- GET `/api/articles/:title/comments` - Récupération des commentaires (200)
+- POST `/api/articles/:title/comments` - Création d'un commentaire (201)
+
+**Scénarios d'erreur (5 tests)** :
+- GET article inexistant - Retour 404 avec message "aucun article correspond"
+- GET catégorie vide - Retour 404 avec message d'erreur approprié
+- POST commentaire sans description - Retour 400 "Description obligatoire"
+- POST commentaire trop long (>1000 caractères) - Retour 400
+- POST commentaire sur article inexistant - Retour 404 "Article non trouvé"
+
+#### Configuration des tests
+
+- Base de données : PostgreSQL configurée dans `.env`
+- Article de test utilisé : `decouverte-d-une-exoplanete` (présent dans `writer.articles`)
+- Nettoyage : Connexion pool fermée proprement après tests (`afterAll`)
+- Serveur : Express n'écoute pas sur un port pendant les tests (`NODE_ENV=test`)
+
+#### Bugs corrigés pendant les tests
+
+1. **Catégorie vide retournait 200** : Ajout d'une vérification `Array.isArray() && length === 0` dans `article-controller.ts`
+2. **Commentaire incomplet** : Le service ne retournait que `{id, created_at}`. Ajout de tous les champs dans la clause `RETURNING`
+
+---
+
+### Frontend Reader
+
+Le frontend Reader (`wn-jjklrt-read-dev/front`) dispose de tests unitaires de composants et de tests E2E.
+
+#### Installation des dépendances de test
+
+```bash
+cd wn-jjklrt-read-dev/front
+npm install
+```
+
+#### Tests unitaires de composants (19 tests)
+
+Fichiers de tests dans `app/component/ui/__tests__/` :
+
+**BackButton.test.tsx (6 tests)** :
+- Affichage du label par défaut "Retour aux articles"
+- Gestion du label personnalisé
+- Vérification du href par défaut `/articles`
+- Support des href personnalisés
+- Application des classes CSS personnalisées
+- Présence de l'icône SVG de flèche
+
+**Comments.test.tsx (6 tests)** :
+- Affichage du message de chargement initial
+- Affichage des commentaires après chargement réussi
+- Message "Aucun commentaire" quand la liste est vide
+- Gestion des erreurs de chargement
+- Encodage correct du titre d'article dans l'URL
+- Encodage des espaces avec `encodeURIComponent`
+
+**AddCommentButton.test.tsx (7 tests)** :
+- Affichage du bouton d'ajout de commentaire
+- Ouverture de la modale au clic
+- Fermeture de la modale (bouton ×)
+- Contraintes de validation (required, maxLength="1000")
+- Appel fetch avec les bonnes données (POST JSON)
+- Affichage du loader "Envoi en cours..."
+- Fermeture de la modale après succès
+
+#### Lancer les tests unitaires
+
+```bash
+npm test
+# ou mode watch
+npm run test:watch
+```
+
+#### Tests E2E (12 tests)
+
+Fichiers de tests dans `tests/` :
+
+**article-navigation.spec.ts (3 tests)** :
+- Navigation vers la liste des articles et consultation d'un détail
+- Affichage d'un message d'erreur pour article inexistant (404)
+- Ajout d'un commentaire sur un article
+
+**category-filter.spec.ts (4 tests)** :
+- Affichage de la page de filtrage par catégorie
+- Filtrage par "Sciences et technologies"
+- Filtrage par "International"
+- Navigation vers un article depuis les résultats filtrés
+
+**global-navigation.spec.ts (5 tests)** :
+- Affichage du header sur toutes les pages
+- Navigation entre les pages via les liens
+- Affichage correct de la page d'accueil
+- Affichage correct de la page "À propos"
+- Utilisation du bouton retour pour revenir à la liste
+
+#### Lancer les tests E2E
+
+```bash
+npm run test:e2e
+# ou en mode headed (visible)
+npm run test:e2e:headed
+```
+
+#### Configuration Playwright
+
+- `playwright.config.ts` : Configuration avec baseURL `http://localhost:3000` (reader-front)
+- Timeout : 30000ms par test
+- Reporter : list
+- Browsers : chromium uniquement
+
+#### Bonnes pratiques Reader
+
+- **Docker requis** : Les tests E2E nécessitent que tous les services Docker soient lancés
+- **Délais d'attente** : Ajout de `waitForTimeout` pour laisser le temps aux composants client (`ssr: false`) de charger
+- **Sélecteurs robustes** : Utilisation de `getByRole`, `getByText`, et `locator` avec regex pour gérer la casse
+- **BackButton** : C'est un `<Link>` (role="link"), pas un `<button>` (role="button")
+
+---
+
 ### Gestion des éléments multiples dans les tests
 
 **Problème** : Sur la page `/edit`, il y a **2 formulaires** qui affichent le même message de succès "Article mis à jour", ce qui causait une erreur `Found multiple elements`.
@@ -316,21 +469,36 @@ npm run lint  # Vérifie TOUS les fichiers de tous les services
   ```
 
 ### Backend
-- Lancer les tests unitaires/integration (Jest/Supertest) :
+- Lancer les tests backend Writer :
   ```bash
   cd wn-jjklrt-write-dev/write-back
   npm test
   ```
+- Lancer les tests backend Reader :
+  ```bash
+  cd wn-jjklrt-read-dev/back
+  npm test
+  ```
 
 ### Frontend
-- Lancer les tests unitaires (Jest) :
+- Lancer les tests unitaires Writer :
   ```bash
   cd wn-jjklrt-write-dev/write-front
   npm test
   ```
-- Lancer les tests E2E (Playwright) :
+- Lancer les tests E2E Writer :
   ```bash
   npx playwright test --headed
+  ```
+- Lancer les tests unitaires Reader :
+  ```bash
+  cd wn-jjklrt-read-dev/front
+  npm test
+  ```
+- Lancer les tests E2E Reader :
+  ```bash
+  cd wn-jjklrt-read-dev/front
+  npm run test:e2e
   ```
 
 ---
