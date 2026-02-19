@@ -1,0 +1,47 @@
+{
+  "name": "world-news-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "World News - Monorepo with Reader and Writer microservices",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "npm run lint:writer-front && npm run lint:writer-back && npm run lint:reader-front && npm run lint:reader-back",
+    "lint:writer-front": "cd wn-jjklrt-write-dev/write-front && npm run lint",
+    "lint:writer-back": "cd wn-jjklrt-write-dev/write-back && npm run lint",
+    "lint:reader-front": "cd wn-jjklrt-read-dev/front && npm run lint",
+    "lint:reader-back": "cd wn-jjklrt-read-dev/back && npm run lint",
+    "format": "npm run format:writer-front && npm run format:writer-back && npm run format:reader-front && npm run format:reader-back",
+    "format:writer-front": "cd wn-jjklrt-write-dev/write-front && npm run format",
+    "format:writer-back": "cd wn-jjklrt-write-dev/write-back && npm run format",
+    "format:reader-front": "cd wn-jjklrt-read-dev/front && npm run format",
+    "format:reader-back": "cd wn-jjklrt-read-dev/back && npm run format",
+    "test:unit": "npm run test:writer-back && npm run test:writer-front",
+    "test:writer-back": "cd wn-jjklrt-write-dev/write-back && npm test",
+    "test:writer-front": "cd wn-jjklrt-write-dev/write-front && npm test",
+    "test:e2e": "npm run test:e2e:writer",
+    "test:e2e:writer": "cd wn-jjklrt-write-dev/write-front && npx playwright test",
+    "test": "npm run test:unit && npm run test:e2e"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^15.3.0"
+  },
+  "lint-staged": {
+    "wn-jjklrt-write-dev/write-front/**/*.{js,jsx,ts,tsx,json}": [
+      "npm --prefix ./wn-jjklrt-write-dev/write-front run format",
+      "npm --prefix ./wn-jjklrt-write-dev/write-front run lint"
+    ],
+    "wn-jjklrt-write-dev/write-back/**/*.{js,jsx,ts,tsx,json}": [
+      "npm --prefix ./wn-jjklrt-write-dev/write-back run format",
+      "npm --prefix ./wn-jjklrt-write-dev/write-back run lint"
+    ],
+    "wn-jjklrt-read-dev/front/**/*.{js,jsx,ts,tsx,json}": [
+      "npm --prefix ./wn-jjklrt-read-dev/front run format",
+      "npm --prefix ./wn-jjklrt-read-dev/front run lint"
+    ],
+    "wn-jjklrt-read-dev/back/**/*.{js,jsx,ts,tsx,json}": [
+      "npm --prefix ./wn-jjklrt-read-dev/back run format",
+      "npm --prefix ./wn-jjklrt-read-dev/back run lint"
+    ]
+  }
+}

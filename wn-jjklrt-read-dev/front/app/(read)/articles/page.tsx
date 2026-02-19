@@ -52,7 +52,9 @@ export default function ArticlesPage() {
     return (
       <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
         <div className="container mx-auto max-w-4xl px-4">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-4 font-share">Articles</h1>
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-4 font-share">
+            Articles
+          </h1>
           <p className="text-black font-puritan">Chargement...</p>
         </div>
       </div>
@@ -62,7 +64,9 @@ export default function ArticlesPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-6 md:p-8">
       <div className="container mx-auto max-w-4xl px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-6 sm:mb-8 font-share">Articles</h1>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-black mb-6 sm:mb-8 font-share">
+          Articles
+        </h1>
 
         {articles.length === 0 ? (
           <p className="text-black font-puritan">Aucun article disponible.</p>
@@ -80,14 +84,25 @@ export default function ArticlesPage() {
                       {article.title}
                     </h2>
                     <div className="flex items-center gap-2 mb-3 sm:mb-4 text-xs sm:text-sm text-gray-600 font-puritan uppercase tracking-wide">
-                      <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                      <svg
+                        className="w-3 h-3 sm:w-4 sm:h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                        />
                       </svg>
                       <span>{formatDate(article.published_at)}</span>
                     </div>
                     <p className="text-sm sm:text-base md:text-lg text-black line-clamp-3 font-puritan leading-relaxed">
                       {article.head}
-                    </p> <p className="text-sm sm:text-base md:text-lg text-black line-clamp-3 font-puritan leading-relaxed">
+                    </p>{" "}
+                    <p className="text-sm sm:text-base md:text-lg text-black line-clamp-3 font-puritan leading-relaxed">
                       {article.category}
                     </p>
                   </div>

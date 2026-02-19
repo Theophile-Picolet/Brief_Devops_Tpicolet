@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import styles from "./page.module.css";
-import Card from "@/components/articles/card";
 
 type Article = {
   title: string;
@@ -13,7 +12,7 @@ type Article = {
   published_at: string;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001";
+const API = "http://localhost:8001";
 
 export default function DeleteArticle() {
   const [lookup, setLookup] = useState("");
@@ -35,17 +34,19 @@ export default function DeleteArticle() {
     try {
       const res = await fetch(
         `${API}/api/articles/${encodeURIComponent(lookup.trim())}`,
-        { cache: "no-store" }
+        { cache: "no-store" },
       );
 
       if (!res.ok) throw new Error("Article introuvable.");
 
       const data: Article = await res.json();
       setArticle(data);
-      setInfo(`Article chargé (${new Date(data.published_at).toLocaleString()})`);
-    } catch (err: any) {
+      setInfo(
+        `Article chargé (${new Date(data.published_at).toLocaleString()})`,
+      );
+    } catch (err: unknown) {
       setArticle(null);
-      setError(err?.message ?? "Article introuvable.");
+      setError(err instanceof Error ? err.message : "Article introuvable.");
     } finally {
       setLoading(false);
     }
@@ -56,9 +57,9 @@ export default function DeleteArticle() {
     if (!article) return;
 
     const confirmed = window.confirm(
-    `⚠️SUPPRESSION LOGIQUE:\n
+      `⚠️SUPPRESSION LOGIQUE:\n
     L'article "${article.title}" sera retiré de l'affichage public mais restera en base de données.\n
-    Souhaitez vous continuer ?`
+    Souhaitez vous continuer ?`,
     );
 
     if (!confirmed) return;
@@ -71,7 +72,7 @@ export default function DeleteArticle() {
       const res = await fetch(
         // `${API}/api/articles/${encodeURIComponent(article.title)}`,
         `${API}/api/articles/${encodeURIComponent(article.title)}/soft-delete`, // soft-delete pour mise en archive
-        { method: "DELETE" }
+        { method: "DELETE" },
       );
 
       const body = await res.json().catch(() => ({}));
@@ -79,14 +80,18 @@ export default function DeleteArticle() {
 
       if (!res.ok)
         throw new Error(
-          body.message || body.error || "Erreur lors de la mise en archive ❌."
+          body.message || body.error || "Erreur lors de la mise en archive ❌.",
         );
 
       setArticle(null);
       setLookup("");
       setInfo("Article archivé avec succès ✅.");
-    } catch (err: any) {
-      setError(err?.message ?? "Erreur lors de la mise en archive ❌.");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Erreur lors de la mise en archive ❌.",
+      );
     } finally {
       setDeleting(false);
     }
@@ -107,7 +112,11 @@ export default function DeleteArticle() {
             placeholder="Titre actuel"
             required
           />
-          <button type="submit" disabled={loading} className={styles.chargerButton}>
+          <button
+            type="submit"
+            disabled={loading}
+            className={styles.chargerButton}
+          >
             {loading ? "Chargement..." : "Charger"}
           </button>
         </div>
@@ -134,6 +143,7 @@ export default function DeleteArticle() {
           </div>
 
           <button
+            type="button"
             className={styles.deleteButton}
             onClick={remove}
             disabled={deleting}

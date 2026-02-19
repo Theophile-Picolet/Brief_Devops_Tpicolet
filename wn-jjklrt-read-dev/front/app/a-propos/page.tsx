@@ -57,15 +57,17 @@ export default function AProposPage() {
             </h2>
             <div className="space-y-4">
               <p className="text-base sm:text-lg text-black leading-relaxed font-puritan">
-                World News est une plateforme moderne dédiée à la diffusion d'articles et d'informations.
-                Notre mission est de fournir un accès facile et intuitif à une sélection 
-                d'articles soigneusement choisis, permettant à nos lecteurs de rester informés sur les 
-                actualités qui comptent.
+                World News est une plateforme moderne dédiée à la diffusion
+                d'articles et d'informations. Notre mission est de fournir un
+                accès facile et intuitif à une sélection d'articles
+                soigneusement choisis, permettant à nos lecteurs de rester
+                informés sur les actualités qui comptent.
               </p>
               <p className="text-base sm:text-lg text-black leading-relaxed font-puritan">
-                World News offre une expérience de lecture 
-                fluide et agréable. Notre interface responsive s'adapte à tous les appareils, que vous 
-                consultiez le site depuis votre ordinateur, votre tablette ou votre smartphone.
+                World News offre une expérience de lecture fluide et agréable.
+                Notre interface responsive s'adapte à tous les appareils, que
+                vous consultiez le site depuis votre ordinateur, votre tablette
+                ou votre smartphone.
               </p>
             </div>
           </div>
@@ -76,8 +78,9 @@ export default function AProposPage() {
               Notre Équipe
             </h2>
             <p className="text-base sm:text-lg text-black leading-relaxed max-w-2xl mx-auto font-puritan">
-              World News est le fruit du travail collaboratif d'une équipe de 6 membres passionnés, 
-              chacun apportant son expertise pour créer une plateforme d'information moderne et efficace.
+              World News est le fruit du travail collaboratif d'une équipe de 6
+              membres passionnés, chacun apportant son expertise pour créer une
+              plateforme d'information moderne et efficace.
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">

@@ -1,6 +1,6 @@
 import "./globals.css";
+import { Junge, Puritan, Share } from "next/font/google";
 import Header from "./component/layout/Header";
-import { Share, Puritan, Junge } from "next/font/google";
 
 const share = Share({
   weight: ["400", "700"],
@@ -27,7 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${share.variable} ${puritan.variable} ${junge.variable}`}>
+      <body
+        className={`${share.variable} ${puritan.variable} ${junge.variable}`}
+      >
         <Header />
         {children}
       </body>

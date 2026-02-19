@@ -12,7 +12,7 @@ Pour récupérer le code source :
 - Tapez la commande suivante :
 
 ```bash
-git clone <url-du-repo>
+git clone https://github.com/Theophile-Picolet/Brief_Devops_Tpicolet.git
 cd News_Devops_Tpicolet
 ```
 
@@ -54,11 +54,231 @@ docker-compose down
 - `docker-compose.yml` : orchestration des services
 - `.env` / `.env.example` : variables d'environnement globales
 
+
+## Gestion de la base de test et isolation des tests backend
+
+### Utilisation d'une base PostgreSQL dédiée aux tests
+
+Pour garantir l'intégrité des données de production, tous les tests backend s'exécutent sur une base de données PostgreSQL dédiée aux tests, totalement isolée de la base principale.
+
+- Un service `database-test` est défini dans le `docker-compose.yml` (port 5433), avec le même schéma et les mêmes scripts d'initialisation que la base principale.
+- Les variables d'environnement pour la base de test sont définies dans un fichier `.env.test` (exemple fourni dans `wn-jjklrt-write-dev/write-back/.env.test`).
+- Lors de l'exécution des tests, le backend charge ce fichier `.env.test` pour pointer vers la base de test (DB_PORT=5433, DB_HOST=localhost ou database-test selon le contexte).
+- Les scripts de test (Jest/Supertest) chargent explicitement `.env.test` avant toute importation du code applicatif pour garantir que le pool de connexion utilise la bonne base.
+- La base de test est automatiquement initialisée à chaque démarrage du service Docker.
+
+### Bonnes pratiques
+
+- Ne jamais exécuter les tests sur la base de production.
+- Toujours vérifier que les tests manipulent la base de test (logs, port 5433, etc.).
+- Nettoyer la base de test si besoin avant/après les tests pour garantir l'indépendance des campagnes de tests.
+
+---
 ## Sécurité
 
 - Le fichier `.env` ne doit jamais être versionné (voir `.gitignore`).
 - Utilisez toujours `.env.example` pour partager la structure attendue des variables.
 
+## Tests automatisés
+
+### Backend Writer
+
+Le backend writer (`wn-jjklrt-write-dev/write-back`) dispose de tests automatisés unitaires et d'intégration pour garantir la qualité du code.
+
+#### Installation des dépendances de test
+
+Les dépendances de test (Jest, Supertest, ts-jest) sont déjà incluses dans le `package.json`. Pour les installer :
+
+```bash
+cd wn-jjklrt-write-dev/write-back
+npm install
+```
+
+#### Lancer les tests
+
+Pour exécuter tous les tests (unitaires et d'intégration) :
+
+```bash
+npm test
+```
+
+Cette commande lance Jest avec l'environnement de test configuré (`NODE_ENV=test`).
+
+#### Types de tests
+
+- **Tests unitaires** : testent les fonctions/méthodes de manière isolée avec des mocks (ex : `article-service.test.ts`)
+- **Tests d'intégration API** : testent les endpoints de l'API avec une vraie connexion à la base de données (ex : `article-api.test.ts`)
+
+#### Configuration des tests
+
+- Les tests utilisent la base de données PostgreSQL configurée dans `.env`
+- Les données de test sont initialisées via `schema.sql` (5 articles de test insérés automatiquement)
+- La connexion à la base est fermée proprement après les tests pour éviter les fuites de ressources
+- Le serveur Express ne démarre pas pendant les tests (`NODE_ENV=test`)
+
+#### Données de test
+
+Le fichier `wn-jjklrt-write-dev/database/schema.sql` contient un jeu de 5 articles de test qui sont insérés automatiquement lors de l'initialisation de la base de données. Ces données permettent de tester les opérations CRUD sur l'API.
+
+#### Bonnes pratiques
+
+- Lancez les tests avant chaque commit pour valider vos modifications
+- Les tests sont obligatoires pour la validation du projet (critères de notation)
+- Ne commitez pas de code qui fait échouer les tests
+- Ajoutez des tests pour chaque nouvelle fonctionnalité
+
 ---
 
-N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet (tests, hooks, CI/CD, déploiement, etc.).
+
+## Tests automatisés Frontend & E2E
+
+### Frontend (Next.js/React)
+
+#### Dépendances installées
+
+- Tests unitaires :
+  - jest
+  - @testing-library/react
+  - @testing-library/jest-dom
+  - @testing-library/user-event
+  - typescript (pour le typage)
+  - @types/jest
+  - @types/testing-library__react
+  - @types/testing-library__user-event
+
+- Tests E2E :
+  - @playwright/test
+
+#### Installation des dépendances de test
+
+```bash
+cd wn-jjklrt-write-dev/write-front
+npm install
+```
+
+#### Lancer les tests unitaires (Jest)
+
+```bash
+npm test
+# ou
+npx jest
+```
+
+#### Lancer les tests E2E (Playwright)
+
+```bash
+npx playwright test --headed
+# ou pour l’interface graphique
+npx playwright test --ui
+```
+
+Les tests E2E sont situés dans le dossier `tests/` et utilisent Playwright pour simuler des parcours utilisateur réels (création et édition d’article).
+
+#### Bonnes pratiques E2E
+- Un titre unique est généré à chaque exécution de test pour éviter les conflits de clé primaire.
+- Les tests E2E ne modifient pas la clé primaire (titre) lors de l’édition pour éviter les erreurs de duplication.
+- Nettoyez la base de données si besoin avant/après les tests pour éviter les doublons.
+
+---
+
+## Récapitulatif des commandes utiles
+
+### Docker
+- Démarrer tous les services :
+  ```bash
+  docker-compose up --build
+  ```
+- Arrêter tous les services :
+  ```bash
+  docker-compose down
+  ```
+- Voir les ports ouverts :
+  ```bash
+  sudo lsof -i -P -n | grep LISTEN
+  ```
+- Arrêter tous les conteneurs Docker :
+  ```bash
+  docker stop $(docker ps -q)
+  ```
+
+### Backend
+- Lancer les tests unitaires/integration (Jest/Supertest) :
+  ```bash
+  cd wn-jjklrt-write-dev/write-back
+  npm test
+  ```
+
+### Frontend
+- Lancer les tests unitaires (Jest) :
+  ```bash
+  cd wn-jjklrt-write-dev/write-front
+  npm test
+  ```
+- Lancer les tests E2E (Playwright) :
+  ```bash
+  npx playwright test --headed
+  ```
+
+---
+
+## À faire / Problèmes connus
+
+- [ ] Vérifier la logique de recherche et d’édition d’article côté backend writer (problème de non-retrouvabilité d’article lors des tests E2E)
+- [ ] Ajouter un nettoyage automatique de la base avant/après les tests E2E si besoin
+- [ ] Compléter la documentation sur les hooks, CI/CD, déploiement
+
+N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet (hooks, CI/CD, déploiement, etc.).
+
+## Qualité de code : Biome & Husky
+
+### Linting et formatage automatisés
+
+Le projet utilise **Biome** pour le linting et le formatage de tous les services (front et back, reader et writer).
+Les vérifications sont automatisées grâce à **Husky** et **lint-staged**.
+
+#### Fonctionnement des hooks Git
+
+- **pre-commit** :
+  - Formate et vérifie uniquement les fichiers modifiés/stagés avec Biome.
+  - Bloque le commit si une erreur de lint/formatage est détectée.
+
+- **pre-push** :
+  - Exécute tous les tests unitaires (back et front).
+  - Bloque le push si un test échoue.
+
+#### Commandes utiles
+
+À la racine du projet :
+
+| Commande | Description |
+|----------|-------------|
+| `npm run lint` | Lint tous les services avec Biome |
+| `npm run format` | Formate tout le code avec Biome |
+| `npm run lint:writer-front` | Lint uniquement le frontend Writer |
+| `npm run lint:writer-back` | Lint uniquement le backend Writer |
+| `npm run lint:reader-front` | Lint uniquement le frontend Reader |
+| `npm run lint:reader-back` | Lint uniquement le backend Reader |
+| `npm run format:writer-front` | Formate uniquement le frontend Writer |
+| `npm run format:writer-back` | Formate uniquement le backend Writer |
+| `npm run format:reader-front` | Formate uniquement le frontend Reader |
+| `npm run format:reader-back` | Formate uniquement le backend Reader |
+
+#### Exemple de workflow
+
+1. **Avant commit** :
+   - Modifiez vos fichiers, puis faites `git add ...`
+   - Lors du `git commit`, Husky lance automatiquement Biome sur les fichiers modifiés.
+   - Si une erreur est détectée, le commit est annulé.
+
+2. **Avant push** :
+   - Lors du `git push`, Husky lance tous les tests unitaires.
+   - Si un test échoue, le push est annulé.
+
+#### Bypass (à éviter)
+
+Pour ignorer temporairement les hooks (ex : urgence) :
+```bash
+git commit --no-verify -m "message"
+git push --no-verify
+```
+> ⚠️ À utiliser avec précaution, car cela contourne les garde-fous qualité.

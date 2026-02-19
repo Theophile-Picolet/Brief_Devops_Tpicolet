@@ -2,9 +2,9 @@
 
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import AddCommentButton from "@/app/component/ui/AddCommentButton";
 import BackButton from "@/app/component/ui/BackButton";
 import CommentsClient from "@/app/component/ui/CommentsClient";
-import AddCommentButton from "@/app/component/ui/AddCommentButton";
 
 interface Article {
   title: string;
@@ -47,7 +47,9 @@ export default function ArticleDetailPage() {
         return fetch(articlesBaseUrl)
           .then((res) => res.json())
           .then((data) => {
-            const foundArticle = data.find((art: Article) => art.title === articleTitle);
+            const foundArticle = data.find(
+              (art: Article) => art.title === articleTitle,
+            );
             if (!foundArticle) {
               throw new Error("Article non trouvé");
             }
@@ -62,7 +64,7 @@ export default function ArticleDetailPage() {
         console.error("Erreur lors du chargement de l'article:", err);
         setLoading(false);
       });
-  }, [articleTitle]);
+  }, [articleTitle, articleUrl]);
 
   useEffect(() => {
     if (!favoriteUrl) {
@@ -93,7 +95,7 @@ export default function ArticleDetailPage() {
       .finally(() => {
         setFavoriteLoading(false);
       });
-  }, [articleTitle]);
+  }, [favoriteUrl]);
 
   const toggleFavorite = async () => {
     if (!favoriteUrl || favoriteLoading) {
@@ -141,7 +143,9 @@ export default function ArticleDetailPage() {
       <div className="min-h-screen bg-white p-4 sm:p-6 md:p-8">
         <div className="container mx-auto max-w-4xl px-4">
           <div className="bg-white p-8 text-center">
-            <p className="text-black font-puritan">Chargement de l&#39;article...</p>
+            <p className="text-black font-puritan">
+              Chargement de l&#39;article...
+            </p>
           </div>
         </div>
       </div>
@@ -195,7 +199,9 @@ export default function ArticleDetailPage() {
                 {isFavorite ? "Retirer des favoris" : "Ajouter aux favoris"}
               </button>
               {favoriteError && (
-                <span className="text-xs sm:text-sm text-red-600">{favoriteError}</span>
+                <span className="text-xs sm:text-sm text-red-600">
+                  {favoriteError}
+                </span>
               )}
             </div>
           </div>
@@ -222,13 +228,13 @@ export default function ArticleDetailPage() {
           </div>
         </article>
 
-          {/* Section commentaires */}
-          <div className="px-6 sm:px-8 md:px-10 pb-6 sm:pb-8 md:pb-10">
-            <div className="mt-8 bg-white text-black rounded shadow p-6">
-              <AddCommentButton articleTitle={article.title} />
-              <CommentsClient articleTitle={article.title} />
-            </div>
+        {/* Section commentaires */}
+        <div className="px-6 sm:px-8 md:px-10 pb-6 sm:pb-8 md:pb-10">
+          <div className="mt-8 bg-white text-black rounded shadow p-6">
+            <AddCommentButton articleTitle={article.title} />
+            <CommentsClient articleTitle={article.title} />
           </div>
+        </div>
       </div>
     </div>
   );

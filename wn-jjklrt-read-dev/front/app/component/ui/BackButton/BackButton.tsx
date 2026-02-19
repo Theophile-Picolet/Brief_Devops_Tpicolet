@@ -8,10 +8,10 @@ interface BackButtonProps {
   className?: string;
 }
 
-export default function BackButton({ 
-  href = "/articles", 
+export default function BackButton({
+  href = "/articles",
   label = "Retour aux articles",
-  className = ""
+  className = "",
 }: BackButtonProps) {
   return (
     <Link
@@ -36,4 +36,3 @@ export default function BackButton({
     </Link>
   );
 }
-

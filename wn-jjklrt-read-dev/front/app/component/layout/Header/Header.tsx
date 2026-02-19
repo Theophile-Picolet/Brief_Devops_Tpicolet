@@ -30,8 +30,8 @@ export default function Header() {
         {/* Desktop Menu */}
         <ul className="hidden md:flex gap-6 lg:gap-10">
           {navLinks.map((link) => {
-            const isActive = 
-              pathname === link.href || 
+            const isActive =
+              pathname === link.href ||
               (link.href === "/articles" && pathname?.startsWith("/articles"));
             return (
               <li key={link.href}>
@@ -77,9 +77,10 @@ export default function Header() {
         {isMenuOpen && (
           <ul className="md:hidden mt-4 space-y-3 pb-2">
             {navLinks.map((link) => {
-              const isActive = 
-                pathname === link.href || 
-                (link.href === "/articles" && pathname?.startsWith("/articles"));
+              const isActive =
+                pathname === link.href ||
+                (link.href === "/articles" &&
+                  pathname?.startsWith("/articles"));
               return (
                 <li key={link.href}>
                   <Link

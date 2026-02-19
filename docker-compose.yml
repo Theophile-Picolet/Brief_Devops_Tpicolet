@@ -9,7 +9,6 @@
 # - reader-front : Interface Next.js pour lire
 # ===================================================================
 
-
 services:
   # ===================================================================
   # SERVICE 1 : Base de données PostgreSQL
@@ -17,19 +16,19 @@ services:
   database:
     # Image officielle PostgreSQL version 16
     image: postgres:16-alpine
-    
+
     # Nom du conteneur (plus facile à identifier)
-    container_name: news-database
-    
+    container_name: database-production
+
     # Charge les variables d'environnement depuis le fichier .env à la racine
     # PostgreSQL utilisera ces variables pour initialiser la base de données
     env_file:
       - ./.env
-    
+
     # Mapping des ports : localhost:5432 → conteneur:5432
     ports:
       - "5432:5432"
-    
+
     # Volumes : montage des scripts SQL pour initialisation automatique
     # PostgreSQL exécute tous les .sql et .sh dans /docker-entrypoint-initdb.d/
     # au premier démarrage, par ordre alphabétique
@@ -40,9 +39,33 @@ services:
       - ./wn-jjklrt-read-dev/back/data/migrations:/docker-entrypoint-initdb.d/02-migrations
       # 03- : script pour exécuter les migrations reader
       - ./wn-jjklrt-read-dev/back/data/init-migrations.sh:/docker-entrypoint-initdb.d/03-init-migrations.sh
-    
+
     # Healthcheck : vérifie que PostgreSQL est prêt à accepter des connexions
     # Évite que les backends démarrent avant que la BDD soit ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ===================================================================
+  # SERVICE 1BIS : Base de données PostgreSQL de TEST
+  # ===================================================================
+  database-test:
+    image: postgres:16-alpine
+
+    container_name: database-test
+
+    env_file:
+      - ./.env
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - ./wn-jjklrt-write-dev/database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ./wn-jjklrt-read-dev/back/data/migrations:/docker-entrypoint-initdb.d/02-migrations
+      - ./wn-jjklrt-read-dev/back/data/init-migrations.sh:/docker-entrypoint-initdb.d/03-init-migrations.sh
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
@@ -57,28 +80,27 @@ services:
     build:
       context: ./wn-jjklrt-write-dev/write-back
       dockerfile: Dockerfile
-    
+
     container_name: writer-backend
-    
+
     # Mapping des ports : localhost:8001 → conteneur:3001
     ports:
       - "8001:3001"
-    
+
     # Charge les variables depuis le .env existant
     env_file:
       - ./wn-jjklrt-write-dev/write-back/.env
-    
+
     # Override uniquement les variables qui changent pour Docker
     # DB_HOST = "database" (nom du service dans le réseau Docker)
     environment:
       DB_HOST: database
-      APP_PORT: 3001
-    
+
     # Dépendances : attend que database soit healthy (vraiment prêt)
     depends_on:
       database:
         condition: service_healthy
-    
+
     # Redémarre automatiquement en cas de crash
     restart: unless-stopped
 
@@ -89,22 +111,22 @@ services:
     build:
       context: ./wn-jjklrt-write-dev/write-front
       dockerfile: Dockerfile
-    
+
     container_name: writer-frontend
-    
+
     # Mapping des ports : localhost:3001 → conteneur:3000
     ports:
       - "3001:3000"
-    
+
     # Variables d'environnement pour appeler l'API backend
     # L'URL doit pointer vers le port EXTERNE du backend (8001 sur localhost)
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8001
-    
+
     # Dépend du backend writer
     depends_on:
       - writer-back
-    
+
     restart: unless-stopped
 
   # ===================================================================
@@ -114,29 +136,28 @@ services:
     build:
       context: ./wn-jjklrt-read-dev/back
       dockerfile: Dockerfile
-    
+
     container_name: reader-backend
-    
+
     # Mapping des ports : localhost:8002 → conteneur:3001
     ports:
       - "8002:3001"
-    
+
     # Charge les variables depuis le .env existant
     env_file:
       - ./wn-jjklrt-read-dev/back/.env
-    
+
     # Override uniquement les variables qui changent pour Docker
     environment:
       DB_HOST: database
-      PORT: 3001
-    
+
     # Dépend de la database ET du writer-back (qui crée le schéma)
     depends_on:
       database:
         condition: service_healthy
       writer-back:
         condition: service_started
-    
+
     restart: unless-stopped
 
   # ===================================================================
@@ -146,21 +167,21 @@ services:
     build:
       context: ./wn-jjklrt-read-dev/front
       dockerfile: Dockerfile
-    
+
     container_name: reader-frontend
-    
+
     # Mapping des ports : localhost:3000 → conteneur:3000
     ports:
       - "3000:3000"
-    
+
     # Variables d'environnement pour appeler l'API backend reader
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8002
-    
+
     # Dépend du backend reader
     depends_on:
       - reader-back
-    
+
     restart: unless-stopped
 
 # ===================================================================

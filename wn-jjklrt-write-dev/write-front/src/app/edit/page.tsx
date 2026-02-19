@@ -3,6 +3,22 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 
+const API = "http://localhost:8001";
+
+// Fonction de slugification
+function slugify(str: string) {
+  return str
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/\p{Diacritic}/gu, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+// Fonction de déslugification pour l'affichage
+function deslugify(str: string) {
+  return str.replace(/-/g, " ").replace(/^\w|\s\w/g, (m) => m.toUpperCase());
+}
+
 type Article = {
   title: string;
   sub_title: string;
@@ -12,7 +28,6 @@ type Article = {
   published_at: string;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8001";
 const json = { "Content-Type": "application/json" };
 
 export default function Edit() {
@@ -47,8 +62,10 @@ export default function Edit() {
     setError(null);
     setInfo(null);
     try {
-       const res = await fetch(
-        `${API}/api/articles/${encodeURIComponent(lookup.trim())}`,
+      // Slugifier la recherche
+      const slug = slugify(lookup.trim());
+      const res = await fetch(
+        `${API}/api/articles/${encodeURIComponent(slug)}`,
         { cache: "no-store" },
       );
       if (!res.ok) throw new Error("Article introuvable.");
@@ -64,9 +81,9 @@ export default function Edit() {
       setInfo(
         `Article chargé (${new Date(data.published_at).toLocaleString()})`,
       );
-    } catch (err: any) {
+    } catch (err: unknown) {
       setArticle(null);
-      setError(err?.message ?? "Article introuvable.");
+      setError(err instanceof Error ? err.message : "Article introuvable.");
     } finally {
       setLoading(false);
     }
@@ -100,8 +117,10 @@ export default function Edit() {
       setInfo(
         `Article mis à jour (${new Date(updated.published_at).toLocaleString()})`,
       );
-    } catch (err: any) {
-      setError(err?.message ?? "Erreur lors de la mise à jour.");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Erreur lors de la mise à jour.",
+      );
     } finally {
       setSaving(false);
     }
@@ -140,8 +159,10 @@ export default function Edit() {
           <input
             id="title"
             name="title"
-            value={form.title}
-            onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))}
+            value={deslugify(form.title)}
+            onChange={(e) =>
+              setForm((p) => ({ ...p, title: slugify(e.target.value) }))
+            }
             maxLength={300}
             required
           />
@@ -197,6 +218,7 @@ export default function Edit() {
             ))}
           </select>
 
+          {info && <p className={styles.status}>{info}</p>}
           {error && <p className={styles.error}>{error}</p>}
 
           <button type="submit" disabled={saving}>

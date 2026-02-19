@@ -28,6 +28,14 @@ CREATE TABLE IF NOT EXISTS writer.articles (
 );
 
 -- fonction appelée par le trigger pour rafraîchir la vue matérialisée lecteur.articles_lecture
+
+-- Données de test pour les tests d'intégration (5 articles)
+INSERT INTO writer.articles (title, sub_title, article_lead, body, categorie, published_at, deleted_at) VALUES
+    ('decouverte-d-une-exoplanete', 'Une nouvelle planète hors du système solaire', 'Des astronomes ont identifié une exoplanète potentiellement habitable.', 'Le télescope spatial James Webb a permis la découverte d''une exoplanète située à 120 années-lumière de la Terre. Les premières analyses révèlent une atmosphère riche en vapeur d''eau.', 'Sciences et technologies', '2024-04-01 10:00:00', NULL),
+    ('croissance-economique-record', 'Le PIB en forte hausse', 'L''économie française enregistre une croissance inédite ce trimestre.', 'Selon l''INSEE, le PIB a progressé de 3,2% au premier trimestre 2024, porté par la reprise du secteur industriel et des exportations.', 'Économie', '2024-04-02 09:30:00', NULL),
+    ('nouvelles-mesures-sanitaires', 'Le gouvernement annonce des restrictions', 'Face à la recrudescence des cas, de nouvelles mesures sont prises.', 'Le ministère de la Santé impose le port du masque dans les lieux publics fermés et encourage la vaccination pour limiter la propagation du virus.', 'Santé', '2024-04-03 08:45:00', NULL),
+    ('victoire-historique-en-football', 'L''équipe locale remporte le championnat', 'Un match intense s''est soldé par la victoire de l''équipe de Lyon.', 'Après une saison exceptionnelle, l''Olympique Lyonnais décroche le titre de champion de France lors d''une finale haletante.', 'Sports', '2024-04-04 20:00:00', NULL),
+    ('festival-du-film-de-cannes', 'Des stars sur le tapis rouge', 'La 77e édition du festival attire les plus grands noms du cinéma.', 'Le festival de Cannes 2024 s''ouvre avec une sélection de films internationaux et la présence de réalisateurs et acteurs de renom.', 'Divertissement', '2024-04-05 18:00:00', NULL);
 -- vérifie l'existence de la vue avant de la rafraîchir pour éviter les erreurs.
 CREATE OR REPLACE FUNCTION writer.refresh_reader_view()
 RETURNS TRIGGER AS $$

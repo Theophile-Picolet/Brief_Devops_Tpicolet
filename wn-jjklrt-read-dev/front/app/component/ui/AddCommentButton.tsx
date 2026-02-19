@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 interface AddCommentButtonProps {
   articleTitle: string;
   onCommentAdded?: () => void;
 }
 
-const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCommentAdded }) => {
-  const router = useRouter();
+const AddCommentButton: React.FC<AddCommentButtonProps> = ({
+  articleTitle,
+  onCommentAdded,
+}) => {
   const [open, setOpen] = useState(false);
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCom
         window.location.reload();
         setShouldRefresh(false);
       }, 2000); // Attendre 2 secondes pour que l'utilisateur voit le message de succès
-      
+
       return () => clearTimeout(timer);
     }
   }, [shouldRefresh]);
@@ -35,7 +37,7 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCom
     setDescription("");
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!description.trim()) {
       setError("Le commentaire ne peut pas être vide.");
@@ -50,44 +52,49 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCom
     try {
       const url = `http://localhost:8002/api/articles/${encodeURIComponent(articleTitle)}/comments`;
       const payload = { description };
-      
+
       console.info("[AddComment] API call:", { url, payload });
-      
+
       const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      
+
       console.info("[AddComment] Response status:", res.status);
-      console.info("[AddComment] Response headers:", Object.fromEntries(res.headers.entries()));
-      
+      console.info(
+        "[AddComment] Response headers:",
+        Object.fromEntries(res.headers.entries()),
+      );
+
       if (!res.ok) {
         const errorText = await res.text();
         console.info("[AddComment] Error response body:", errorText);
         throw new Error(`Erreur ${res.status}: ${res.statusText}`);
       }
-      
+
       const responseData = await res.json();
       console.info("[AddComment] Response data:", responseData);
-      
+
       // Fermer la modale et nettoyer
       setOpen(false);
       setDescription("");
       setError(null);
-      
+
       // Afficher le message de succès
       setSuccess("Commentaire bien envoyé !");
       setTimeout(() => setSuccess(null), 3000);
-      
+
       // Callback pour rafraîchir les commentaires
       if (onCommentAdded) onCommentAdded();
-      
+
       // Déclencher le rafraîchissement de la page
       setShouldRefresh(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Erreur envoi commentaire:", err);
-      setError(err.message || "Erreur inconnue lors de l'envoi");
+      setError(
+        err instanceof Error ? err.message : "Erreur inconnue lors de l'envoi",
+      );
     } finally {
       setLoading(false);
     }
@@ -111,14 +118,16 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCom
             >
               ×
             </button>
-            <h2 className="text-xl font-bold mb-4 text-black">Ajouter un commentaire</h2>
+            <h2 className="text-xl font-bold mb-4 text-black">
+              Ajouter un commentaire
+            </h2>
             <form onSubmit={handleSubmit}>
               <textarea
                 className="w-full border border-gray-300 rounded p-2 mb-2 text-black"
                 rows={5}
                 maxLength={1000}
                 value={description}
-                onChange={e => setDescription(e.target.value)}
+                onChange={(e) => setDescription(e.target.value)}
                 placeholder="Votre commentaire..."
                 required
               />
@@ -148,7 +157,9 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({ articleTitle, onCom
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             <span className="text-green-700 font-medium">{success}</span>
           </div>
-          <small className="text-green-600 block mt-1">Votre commentaire apparaîtra après actualisation</small>
+          <small className="text-green-600 block mt-1">
+            Votre commentaire apparaîtra après actualisation
+          </small>
         </div>
       )}
     </>
