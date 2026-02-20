@@ -1,0 +1,229 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Job 1: Lint tous les services
+  lint:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install Writer Back dependencies
+        run: cd wn-jjklrt-write-dev/write-back && npm ci
+
+      - name: Install Writer Front dependencies
+        run: cd wn-jjklrt-write-dev/write-front && npm ci
+
+      - name: Install Reader Back dependencies
+        run: cd wn-jjklrt-read-dev/back && npm ci
+
+      - name: Install Reader Front dependencies
+        run: cd wn-jjklrt-read-dev/front && npm ci
+
+      - name: Lint all services
+        run: npm run lint
+
+  # Job 2: Tests Writer Backend
+  test-writer-back:
+    name: Tests Writer Backend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_writer
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: wn-jjklrt-write-dev/write-back/package-lock.json
+
+      - name: Install dependencies
+        run: cd wn-jjklrt-write-dev/write-back && npm ci
+
+      - name: Initialize database schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-write-dev/database
+          psql -h localhost -U postgres -d db_writer -p 5433 -f schema.sql
+
+      - name: Create .env.test file
+        run: |
+          cd wn-jjklrt-write-dev/write-back
+          cat > .env.test << EOF
+          DB_HOST=127.0.0.1
+          DB_PORT=5433
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=db_writer
+          PORT=3001
+          NODE_ENV=test
+          EOF
+
+      - name: Run tests
+        run: cd wn-jjklrt-write-dev/write-back && npm test
+
+  # Job 3: Tests Writer Frontend
+  test-writer-front:
+    name: Tests Writer Frontend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: wn-jjklrt-write-dev/write-front/package-lock.json
+
+      - name: Install dependencies
+        run: cd wn-jjklrt-write-dev/write-front && npm ci
+
+      - name: Run component tests
+        run: cd wn-jjklrt-write-dev/write-front && npm test
+
+  # Job 4: Tests Reader Backend
+  test-reader-back:
+    name: Tests Reader Backend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_writer
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: wn-jjklrt-read-dev/back/package-lock.json
+
+      - name: Install dependencies
+        run: cd wn-jjklrt-read-dev/back && npm ci
+
+      - name: Initialize database schema (Writer tables)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-write-dev/database
+          psql -h localhost -U postgres -d db_writer -p 5432 -f schema.sql
+
+      - name: Initialize database migrations (Reader views)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-read-dev/back/data/migrations
+          for file in *.sql; do
+            echo "Executing $file"
+            psql -h localhost -U postgres -d db_writer -p 5432 -f "$file"
+          done
+
+      - name: Create .env file
+        run: |
+          cd wn-jjklrt-read-dev/back
+          cat > .env << EOF
+          DB_HOST=127.0.0.1
+          DB_PORT=5432
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=db_writer
+          PORT=3001
+          NODE_ENV=test
+          EOF
+
+      - name: Run tests
+        run: cd wn-jjklrt-read-dev/back && npm test
+
+  # Job 5: Tests Reader Frontend
+  test-reader-front:
+    name: Tests Reader Frontend
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: wn-jjklrt-read-dev/front/package-lock.json
+
+      - name: Install dependencies
+        run: cd wn-jjklrt-read-dev/front && npm ci
+
+      - name: Run component tests
+        run: cd wn-jjklrt-read-dev/front && npm test
+
+  # Job 6: Build Success Notification
+  build-success:
+    name: Build Success
+    runs-on: ubuntu-latest
+    needs:
+      [test-writer-back, test-writer-front, test-reader-back, test-reader-front]
+
+    steps:
+      - name: Success message
+        run: |
+          echo "✅ All tests passed successfully!"
+          echo "✅ Writer Backend: OK"
+          echo "✅ Writer Frontend: OK"
+          echo "✅ Reader Backend: OK"
+          echo "✅ Reader Frontend: OK"

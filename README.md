@@ -79,7 +79,7 @@ Pour garantir l'intégrité des données de production, tous les tests backend s
 - Le fichier `.env` ne doit jamais être versionné (voir `.gitignore`).
 - Utilisez toujours `.env.example` pour partager la structure attendue des variables.
 
-## Tests automatisés
+## Tests automatisés Writer
 
 ### Backend Writer
 
@@ -130,7 +130,7 @@ Le fichier `wn-jjklrt-write-dev/database/schema.sql` contient un jeu de 5 articl
 ---
 
 
-## Tests automatisés Frontend & E2E
+### Tests automatisés Frontend Writer
 
 ### Frontend (Next.js/React)
 
@@ -512,6 +512,80 @@ npm run lint  # Vérifie TOUS les fichiers de tous les services
 - [x] ~~Corriger le typage TypeScript pour QueryResult~~ → Résolu (QueryResultRow)
 
 N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet.
+
+## GitHub Actions CI/CD Pipeline
+
+### Configuration de l'intégration continue
+
+Le projet dispose d'un pipeline GitHub Actions qui s'exécute automatiquement sur chaque push et pull request vers la branche `main`.
+
+#### Workflow CI/CD
+
+Le pipeline [.github/workflows/ci.yml](.github/workflows/ci.yml) effectue les vérifications suivantes :
+
+**1. Lint & Format Check** 🔍
+- Vérifie le formatage et le linting de tous les services avec Biome
+- Bloque si des erreurs de qualité de code sont détectées
+
+**2. Tests Backend Writer** 🧪
+- Lance PostgreSQL dans un conteneur de service
+- Initialise le schéma de base de données
+- Exécute les 9 tests unitaires et d'intégration
+- Vérifie que l'API fonctionne correctement
+
+**3. Tests Frontend Writer** 🎨
+- Exécute les 3 tests de composants React
+- Vérifie le rendu et le comportement des composants
+
+**4. Tests Backend Reader** 🧪
+- Lance PostgreSQL dans un conteneur de service
+- Initialise le schéma Writer + migrations Reader (vues)
+- Exécute les 10 tests d'intégration API
+- Vérifie la lecture des articles et la gestion des commentaires
+
+**5. Tests Frontend Reader** 🎨
+- Exécute les 19 tests de composants React
+- Vérifie BackButton, Comments, AddCommentButton
+
+**6. Build Success** ✅
+- Notification de succès si tous les tests passent
+
+#### Déclenchement du pipeline
+
+Le pipeline se déclenche automatiquement sur :
+- `git push` vers la branche `main`
+- Ouverture ou mise à jour d'une Pull Request vers `main`
+
+#### Visualiser les résultats
+
+Les résultats du pipeline sont visibles dans l'onglet **Actions** de votre dépôt GitHub :
+```
+https://github.com/votre-username/Brief_Devops_Tpicolet/actions
+```
+
+Un ✅ vert = tous les tests passent
+Un ❌ rouge = au moins un test a échoué
+
+#### Services PostgreSQL dans GitHub Actions
+
+Le workflow utilise des **services Docker** pour les tests nécessitant une base de données :
+- Writer Backend : PostgreSQL sur port 5433
+- Reader Backend : PostgreSQL sur port 5432
+
+Les bases sont automatiquement créées et détruites pour chaque exécution du workflow.
+
+#### Variables d'environnement CI
+
+Les fichiers `.env.test` sont créés dynamiquement par le workflow avec les valeurs suivantes :
+```env
+DB_HOST=127.0.0.1
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_NAME=db_writer
+NODE_ENV=test
+```
+
+---
 
 ## Qualité de code : Biome & Husky
 
