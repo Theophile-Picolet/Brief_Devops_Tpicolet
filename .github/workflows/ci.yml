@@ -173,10 +173,10 @@ jobs:
             psql -h localhost -U postgres -d db_writer -p 5432 -f "$file"
           done
 
-      - name: Create .env file
+      - name: Create .env.test file
         run: |
           cd wn-jjklrt-read-dev/back
-          cat > .env << EOF
+          cat > .env.test << EOF
           DB_HOST=127.0.0.1
           DB_PORT=5432
           DB_USER=postgres
