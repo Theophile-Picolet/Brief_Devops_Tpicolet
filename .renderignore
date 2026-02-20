@@ -1,0 +1,60 @@
+# Render Deployment - Fichiers à ignorer
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Tests
+coverage/
+.jest/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+test-results/
+playwright-report/
+
+# Environnement local
+.env
+.env.local
+.env.test
+.env*.local
+
+# Docker
+docker-compose.yml
+Dockerfile
+.dockerignore
+
+# Git
+.git/
+.gitignore
+.github/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Diagrammes et documentation
+*.excalidraw
+*.drawio
+MCD.excalidraw
+WN.drawio
+diagrams/
+
+# Fichiers de build temporaires (seront reconstruits)
+build/
+.next/
+out/
+dist/
+
+# Logs
+logs/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

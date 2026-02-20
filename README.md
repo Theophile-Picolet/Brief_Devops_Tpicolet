@@ -739,3 +739,76 @@ git commit --no-verify -m "message"
 git push --no-verify
 ```
 > ⚠️ À utiliser avec précaution, car cela contourne les garde-fous qualité.
+
+---
+
+## 🚀 Déploiement sur Render.com
+
+### Déploiement automatisé avec Blueprint
+
+Le projet est configuré pour un déploiement automatique sur Render.com via le fichier [render.yaml](render.yaml).
+
+**Services déployés :**
+- 🗄️ PostgreSQL Database (gratuit 90 jours)
+- 🔧 Writer Backend (API Node.js)
+- 🔧 Reader Backend (API Node.js)
+- 🎨 Writer Frontend (Next.js)
+- 🎨 Reader Frontend (Next.js)
+
+**Plan gratuit Render :**
+- ✅ Idéal pour portfolio et démonstration
+- ⚠️ Services "spin down" après 15 min d'inactivité (premier appel : 30-60s)
+- ⚠️ PostgreSQL gratuit expire après 90 jours
+
+### Guide de déploiement complet
+
+📖 **Consultez le guide détaillé : [DEPLOY_RENDER.md](DEPLOY_RENDER.md)**
+
+**Résumé des étapes :**
+
+1. **Connecter le repository à Render**
+   - Dashboard Render > New > Blueprint
+   - Connecter votre repository GitHub
+   - Render détecte automatiquement `render.yaml`
+
+2. **Initialiser la base de données**
+   ```bash
+   # Depuis votre terminal local
+   export DATABASE_URL="postgres://...@dpg-xxx.oregon-postgres.render.com/db_writer"
+   ./init-db-render.sh
+   ```
+
+3. **Mettre à jour les URLs des services**
+   - Noter les URLs générées par Render pour chaque service
+   - Mettre à jour les variables d'environnement :
+     - `NEXT_PUBLIC_API_URL` dans les frontends
+     - `CLIENT_URL` dans les backends (pour CORS)
+
+4. **Tester l'application déployée**
+   - Ouvrir les URLs des frontends dans votre navigateur
+   - Créer un article sur Writer Frontend
+   - Vérifier qu'il apparaît sur Reader Frontend
+
+### URLs de production
+
+Une fois déployé, vous aurez des URLs du type :
+- Writer Frontend : `https://writer-frontend-xxx.onrender.com`
+- Reader Frontend : `https://reader-frontend-xxx.onrender.com`
+- Writer Backend : `https://writer-backend-xxx.onrender.com/api/articles`
+- Reader Backend : `https://reader-backend-xxx.onrender.com/api/articles`
+
+### Scripts utiles
+
+| Script | Description |
+|--------|-------------|
+| `./init-db-render.sh` | Initialise le schéma PostgreSQL sur Render |
+| `render.yaml` | Configuration Blueprint pour déploiement automatique |
+| `.renderignore` | Fichiers à exclure du déploiement |
+
+### Troubleshooting déploiement
+
+Consultez la section "Dépannage" dans [DEPLOY_RENDER.md](DEPLOY_RENDER.md) pour résoudre les problèmes courants.
+
+---
+
+N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du projet.

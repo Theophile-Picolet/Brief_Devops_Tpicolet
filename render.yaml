@@ -1,0 +1,122 @@
+# Render Blueprint - Déploiement automatique de l'application News DevOps
+# Documentation: https://render.com/docs/blueprint-spec
+
+databases:
+  - name: news-devops-db
+    databaseName: db_writer
+    user: postgres
+    plan: free
+    # Note: Le plan free expire après 90 jours
+    # Pour initialiser le schéma, allez dans le dashboard Render > Database > Connect
+    # Puis exécutez manuellement:
+    # psql -h <hostname> -U postgres -d db_writer -f wn-jjklrt-write-dev/database/schema.sql
+    # psql -h <hostname> -U postgres -d db_writer -f wn-jjklrt-read-dev/back/data/migrations/*.sql
+
+services:
+  # ========================================
+  # WRITER BACKEND - API d'écriture
+  # ========================================
+  - type: web
+    name: writer-backend
+    runtime: node
+    plan: free
+    # Note: Le plan free "spin down" après 15 min d'inactivité (premier appel lent)
+    buildCommand: cd wn-jjklrt-write-dev/write-back && npm install && npm run build
+    startCommand: cd wn-jjklrt-write-dev/write-back && npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DB_HOST
+        fromDatabase:
+          name: news-devops-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: news-devops-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: news-devops-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: news-devops-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: news-devops-db
+          property: database
+
+  # ========================================
+  # READER BACKEND - API de lecture
+  # ========================================
+  - type: web
+    name: reader-backend
+    runtime: node
+    plan: free
+    buildCommand: cd wn-jjklrt-read-dev/back && npm install && npm run build
+    startCommand: cd wn-jjklrt-read-dev/back && npm start
+    healthCheckPath: /api/articles
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      - key: DB_HOST
+        fromDatabase:
+          name: news-devops-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: news-devops-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: news-devops-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: news-devops-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: news-devops-db
+          property: database
+      - key: CLIENT_URL
+        value: https://reader-frontend.onrender.com
+        # À mettre à jour avec l'URL réelle après déploiement
+
+  # ========================================
+  # WRITER FRONTEND - Interface d'écriture
+  # ========================================
+  - type: web
+    name: writer-frontend
+    runtime: node
+    plan: free
+    buildCommand: cd wn-jjklrt-write-dev/write-front && npm install && npm run build
+    startCommand: cd wn-jjklrt-write-dev/write-front && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://writer-backend.onrender.com
+        # À mettre à jour avec l'URL réelle du writer-backend
+
+  # ========================================
+  # READER FRONTEND - Interface de lecture
+  # ========================================
+  - type: web
+    name: reader-frontend
+    runtime: node
+    plan: free
+    buildCommand: cd wn-jjklrt-read-dev/front && npm install && npm run build
+    startCommand: cd wn-jjklrt-read-dev/front && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_API_URL
+        value: https://reader-backend.onrender.com
+        # À mettre à jour avec l'URL réelle du reader-backend
