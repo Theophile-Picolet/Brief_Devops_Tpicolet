@@ -19,10 +19,9 @@ services:
     name: writer-backend
     runtime: node
     plan: free
-    rootDirectory: wn-jjklrt-write-dev/write-back
     # Note: Le plan free "spin down" après 15 min d'inactivité (premier appel lent)
-    buildCommand: npm install --production=false && npm run build
-    startCommand: npm start
+    buildCommand: cd wn-jjklrt-write-dev/write-back && npm install --production=false && npm run build
+    startCommand: cd wn-jjklrt-write-dev/write-back && npm start
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
@@ -57,9 +56,8 @@ services:
     name: reader-backend
     runtime: node
     plan: free
-    rootDirectory: wn-jjklrt-read-dev/back
-    buildCommand: npm install --production=false && npm run build
-    startCommand: npm start
+    buildCommand: cd wn-jjklrt-read-dev/back && npm install --production=false && npm run build
+    startCommand: cd wn-jjklrt-read-dev/back && npm start
     healthCheckPath: /api/articles
     envVars:
       - key: NODE_ENV
@@ -97,9 +95,8 @@ services:
     name: writer-frontend
     runtime: node
     plan: free
-    rootDirectory: wn-jjklrt-write-dev/write-front
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: cd wn-jjklrt-write-dev/write-front && npm install --production=false && npm run build
+    startCommand: cd wn-jjklrt-write-dev/write-front && npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -114,9 +111,8 @@ services:
     name: reader-frontend
     runtime: node
     plan: free
-    rootDirectory: wn-jjklrt-read-dev/front
-    buildCommand: npm install && npm run build
-    startCommand: npm start
+    buildCommand: cd wn-jjklrt-read-dev/front && npm install --production=false && npm run build
+    startCommand: cd wn-jjklrt-read-dev/front && npm start
     envVars:
       - key: NODE_ENV
         value: production
