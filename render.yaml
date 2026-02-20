@@ -21,7 +21,7 @@ services:
     plan: free
     rootDirectory: wn-jjklrt-write-dev/write-back
     # Note: Le plan free "spin down" après 15 min d'inactivité (premier appel lent)
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --production=false && npm run build
     startCommand: npm start
     healthCheckPath: /
     envVars:
@@ -58,7 +58,7 @@ services:
     runtime: node
     plan: free
     rootDirectory: wn-jjklrt-read-dev/back
-    buildCommand: npm install && npm run build
+    buildCommand: npm install --production=false && npm run build
     startCommand: npm start
     healthCheckPath: /api/articles
     envVars:
