@@ -4,7 +4,6 @@
 databases:
   - name: news-devops-db
     databaseName: db_writer
-    user: postgres
     plan: free
     # Note: Le plan free expire après 90 jours
     # Pour initialiser le schéma, allez dans le dashboard Render > Database > Connect
