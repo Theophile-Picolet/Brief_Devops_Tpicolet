@@ -515,9 +515,16 @@ N'hésitez pas à compléter ce README au fur et à mesure de l'avancement du pr
 
 ## GitHub Actions CI/CD Pipeline
 
+![CI/CD Status](https://github.com/Theophile-Picolet/Brief_Devops_Tpicolet/actions/workflows/ci.yml/badge.svg)
+
 ### Configuration de l'intégration continue
 
 Le projet dispose d'un pipeline GitHub Actions qui s'exécute automatiquement sur chaque push et pull request vers la branche `main`.
+
+**📊 Statistiques du pipeline :**
+- ⚡ Temps d'exécution moyen : 3-5 minutes
+- 🧪 Nombre total de tests : 53 (9 writer-back + 3 writer-front + 10 reader-back + 31 reader-front)
+- 🔍 Outils utilisés : Node.js 20, PostgreSQL 16, Biome, Jest, Playwright
 
 #### Workflow CI/CD
 
@@ -584,6 +591,98 @@ DB_PASSWORD=postgres
 DB_NAME=db_writer
 NODE_ENV=test
 ```
+
+#### Architecture du pipeline
+
+```
+Push/PR → main
+      │
+      ▼
+┌──────────────┐
+│  1. Lint 🔍  │  ← Vérifie qualité code (30-45s)
+└──────┬───────┘
+       │
+   ┌───┴───┬───────┬───────┐
+   │       │       │       │
+   ▼       ▼       ▼       ▼
+┌──────┐┌──────┐┌──────┐┌──────┐
+│Test  ││Test  ││Test  ││Test  │
+│Writer││Writer││Reader││Reader│
+│Back  ││Front ││Back  ││Front │
+│(9✓)  ││(3✓)  ││(10✓) ││(31✓) │
+└──┬───┘└──┬───┘└──┬───┘└──┬───┘
+   │       │       │       │
+   └───┬───┴───────┴───────┘
+       │
+       ▼
+┌─────────────────┐
+│ Build Success ✅ │
+└─────────────────┘
+```
+
+**Les jobs s'exécutent en parallèle** après le lint, ce qui accélère le pipeline.
+
+#### Concepts clés
+
+| Terme | Définition |
+|-------|------------|
+| **Workflow** | Processus automatisé défini dans `.github/workflows/ci.yml` |
+| **Job** | Tâche indépendante exécutée sur une machine virtuelle Ubuntu |
+| **Step** | Action individuelle au sein d'un job (checkout, install, test...) |
+| **Service** | Conteneur Docker (ex: PostgreSQL) utilisé par un job |
+| **Health Check** | Vérification que PostgreSQL est prêt avant d'exécuter les tests |
+| **Cache npm** | Réutilisation de `node_modules/` entre les exécutions (gain de temps) |
+
+#### Commandes importantes
+
+| Commande | Usage | Pourquoi |
+|----------|-------|----------|
+| `npm ci` | Installation des dépendances en CI | Reproductibilité garantie (utilise `package-lock.json`) |
+| `npm install` | Installation locale | Peut modifier `package-lock.json` |
+| `pg_isready` | Vérifie si PostgreSQL est prêt | Évite les tests avant que la BDD soit opérationnelle |
+
+#### Structure de chargement des variables d'environnement
+
+Les backends (writer et reader) utilisent une structure identique pour charger les variables d'environnement en test :
+
+**Fichiers de test** (`*.test.ts`) :
+```typescript
+import dotenv from "dotenv";
+dotenv.config({ path: ".env.test" });  // ← Charge .env.test AVANT tout import
+import request from "supertest";
+import app from "../index";
+```
+
+**Fichiers de configuration** (`db.ts` / `client.ts`) :
+```typescript
+import dotenv from "dotenv";
+dotenv.config();  // ← Charge automatiquement .env ou .env.test selon NODE_ENV
+import { Pool } from "pg";
+```
+
+**Pourquoi cette structure ?**
+- Les tests chargent **explicitement** `.env.test` en premier
+- Les autres imports (db.ts, client.ts) trouvent les variables déjà chargées
+- Garantit que les tests utilisent toujours la base de test (port 5433 local, 5432/5433 CI)
+
+#### Dépannage (Troubleshooting)
+
+**Erreur : "SASL: client password must be a string"**
+- ✅ **Solution** : Vérifiez que le fichier `.env.test` existe et contient toutes les variables requises
+- ✅ Le test doit charger `.env.test` en PREMIER (avant les imports du code)
+
+**Erreur : "port already in use"**
+- ✅ **Solution** : Arrêtez tous les conteneurs Docker : `docker compose down`
+- ✅ Vérifiez qu'aucun PostgreSQL local n'utilise les ports 5432/5433
+
+**Tests échouent en local mais passent sur GitHub Actions**
+- ✅ **Solution** : Vérifiez que la base de test est démarrée : `docker compose up -d database-test`
+- ✅ Assurez-vous que le schéma et les migrations sont à jour
+
+**Workflow GitHub Actions échoue**
+- ✅ Consultez les logs détaillés dans l'onglet "Actions" de votre dépôt
+- ✅ Vérifiez que tous les fichiers `.env.test` sont créés correctement dans le workflow
+- ✅ Assurez-vous que les health checks PostgreSQL fonctionnent (timeout 50s max)
 
 ---
 
