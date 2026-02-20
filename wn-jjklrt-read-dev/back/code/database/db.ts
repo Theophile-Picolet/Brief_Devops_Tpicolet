@@ -1,5 +1,10 @@
 // Config pour le Cron: connexion à PostgreSQL
 
+import dotenv from "dotenv";
+
+// Charger les variables d'environnement (avec support de .env.test)
+dotenv.config();
+
 import type { Pool as PgPool, QueryResult, QueryResultRow } from "pg";
 import { Pool } from "pg";
 
