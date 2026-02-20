@@ -43,6 +43,11 @@ app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
 
 /* ************************************************************************* */
 
+// Health check endpoint for Render
+app.get("/", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use("/api", router);
 
 /* ************************************************************************* */
