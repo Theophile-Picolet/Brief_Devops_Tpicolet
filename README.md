@@ -123,8 +123,7 @@ Le fichier `wn-jjklrt-write-dev/database/schema.sql` contient un jeu de 5 articl
 #### Bonnes pratiques
 
 - Lancez les tests avant chaque commit pour valider vos modifications
-- Les tests sont obligatoires pour la validation du projet (critères de notation)
-- Ne commitez pas de code qui fait échouer les tests
+- Les tests sont obligatoires pour la validation du projet
 - Ajoutez des tests pour chaque nouvelle fonctionnalité
 
 ---

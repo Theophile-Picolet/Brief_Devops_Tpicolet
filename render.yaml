@@ -56,7 +56,7 @@ services:
     plan: free
     buildCommand: cd wn-jjklrt-read-dev/back && npm install --production=false && npm run build
     startCommand: cd wn-jjklrt-read-dev/back && npm start
-    healthCheckPath: /api/articles
+    healthCheckPath: /
     envVars:
       - key: NODE_ENV
         value: production

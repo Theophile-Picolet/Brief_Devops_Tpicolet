@@ -22,6 +22,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+// Health check endpoint for Render
+app.get("/", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 // route articles
 app.use(articlesRouter);
 
