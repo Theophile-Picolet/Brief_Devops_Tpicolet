@@ -35,35 +35,46 @@ DB_PASSWORD=motdepasse
 DB_NAME=nom_de_la_base_de_test
 ```
 
-### Prérequis pour les tests E2E (Playwright)
+### ⚠️ Prérequis Docker — obligatoire avant tout test, commit ou push
 
-Les tests Playwright supposent que les serveurs front et back sont **déjà démarrés** avant leur exécution :
+**Tous les tests d'intégration et E2E nécessitent que les conteneurs Docker soient démarrés.** Sans cela, les tests échoueront et le push sera bloqué par le hook pre-push.
 
-- **Front lecture** : le front doit tourner sur `http://localhost:3000` (configuré dans `wn-jjklrt-read-dev/front/playwright.config.ts` → `baseURL`).
-- **Front écriture** : le front doit tourner sur `http://localhost:3001` (utilisé dans `wn-jjklrt-write-dev/write-front/tests/article-e2e.spec.ts`).
+| Type de test | Conteneur requis | Port |
+|---|---|---|
+| Intégration Jest (back) | `database-test` | 5433 |
+| E2E Playwright (reader) | `database` + `reader-back` + `reader-front` | 5432, 8002, 3000 |
+| E2E Playwright (writer) | `database` + `writer-back` + `writer-front` | 5432, 8001, 3001 |
 
-Démarrer les serveurs avant les tests :
+**Commande à lancer avant de travailler, de tester, ou de pousser :**
 ```bash
-# Back lecture
-cd wn-jjklrt-read-dev/back && npm run dev
-# Front lecture
-cd wn-jjklrt-read-dev/front && npm run dev
+# Depuis la racine du projet
+docker compose up -d
 ```
+
+Cela démarre tous les services en arrière-plan. Vérifier qu'ils sont prêts :
+```bash
+docker compose ps
+```
+
+> Le hook `.husky/pre-push` lance automatiquement tous les tests (Jest + Playwright) avant chaque push. Si les conteneurs ne sont pas démarrés, il affiche un message d'erreur et bloque le push.
 
 ### Commandes pour lancer les tests du projet
 
 ```bash
-# Tests d'intégration — back lecture
-cd wn-jjklrt-read-dev/back && npm test
+# Depuis la racine — tous les tests Jest (unitaires + intégration)
+npm run test:unit
 
-# Tests unitaires et d'intégration — back écriture
-cd wn-jjklrt-write-dev/write-back && npm test
+# Depuis la racine — tous les tests E2E Playwright
+npm run test:e2e
 
-# Tests E2E — front lecture (serveurs démarrés requis)
-cd wn-jjklrt-read-dev/front && npx playwright test
+# Depuis la racine — tout (Jest + Playwright, équivalent au pre-push)
+npm test
 
-# Tests E2E — front écriture (serveurs démarrés requis)
-cd wn-jjklrt-write-dev/write-front && npx playwright test
+# Par module uniquement
+cd wn-jjklrt-read-dev/back && npm test        # intégration back lecture
+cd wn-jjklrt-write-dev/write-back && npm test  # unitaire + intégration back écriture
+cd wn-jjklrt-read-dev/front && npx playwright test        # E2E front lecture
+cd wn-jjklrt-write-dev/write-front && npx playwright test  # E2E front écriture
 ```
 
 ---
