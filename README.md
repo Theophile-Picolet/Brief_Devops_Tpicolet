@@ -748,11 +748,11 @@ git push --no-verify
 Le projet est configuré pour un déploiement automatique sur Render.com via le fichier [render.yaml](render.yaml).
 
 **Services déployés :**
-- 🗄️ PostgreSQL Database (gratuit 90 jours)
-- 🔧 Writer Backend (API Node.js)
-- 🔧 Reader Backend (API Node.js)
-- 🎨 Writer Frontend (Next.js)
-- 🎨 Reader Frontend (Next.js)
+-  PostgreSQL Database (gratuit 90 jours)
+-  Writer Backend (API Node.js)
+-  Reader Backend (API Node.js)
+-  Writer Frontend (Next.js)
+-  Reader Frontend (Next.js)
 
 **Plan gratuit Render :**
 - ✅ Idéal pour portfolio et démonstration
