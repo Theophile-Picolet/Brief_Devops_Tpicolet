@@ -30,25 +30,38 @@ const logErrors: ErrorRequestHandler = (err, req, _res, next) => {
   next(err);
 };
 
-app.use(logErrors);
-
-/* ************************************************************************* */
-app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
-  const message =
-    err instanceof Error
-      ? err.message
-      : "Erreur lors de la création de l'utilisateur.";
-  res.status(400).json({ error: message });
-});
-
-/* ************************************************************************* */
-
 // Health check endpoint for Render
 app.get("/", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// Mount API routes
 app.use("/api", router);
+
+/* ************************************************************************* */
+// Log errors from routes
+app.use(logErrors);
+
+/* ************************************************************************* */
+// Central error handler: detect DB connection issues and return a clear 500 response
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  const message = err instanceof Error ? err.message : String(err);
+
+  const isDbError =
+    message.includes("ECONNREFUSED") ||
+    message.includes("connect ECONNREFUSED") ||
+    message.includes("Failed to establish a database connection");
+
+  if (isDbError) {
+    console.warn("Controler la connexion à la base de données (erreur 500)");
+    res.status(500).json({
+      error: "Controler la connexion à la base de données (erreur 500)",
+    });
+    return;
+  }
+
+  res.status(400).json({ error: message });
+});
 
 /* ************************************************************************* */
 
