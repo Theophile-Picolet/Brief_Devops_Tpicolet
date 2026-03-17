@@ -20,8 +20,9 @@
     "test:writer-front": "cd wn-jjklrt-write-dev/write-front && npm test",
     "test:reader-back": "cd wn-jjklrt-read-dev/back && npm test",
     "test:reader-front": "cd wn-jjklrt-read-dev/front && npm test",
-    "test:e2e": "npm run test:e2e:writer",
+    "test:e2e": "npm run test:e2e:writer && npm run test:e2e:reader",
     "test:e2e:writer": "cd wn-jjklrt-write-dev/write-front && npx playwright test",
+    "test:e2e:reader": "cd wn-jjklrt-read-dev/front && npx playwright test",
     "test": "npm run test:unit && npm run test:e2e"
   },
   "devDependencies": {

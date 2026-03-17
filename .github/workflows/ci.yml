@@ -212,18 +212,208 @@ jobs:
       - name: Run component tests
         run: cd wn-jjklrt-read-dev/front && npm test
 
-  # Job 6: Build Success Notification
+  # Job 6: E2E Tests Reader Frontend
+  e2e-reader:
+    name: E2E Tests Reader Frontend
+    runs-on: ubuntu-latest
+    needs: [test-reader-back, test-reader-front]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_writer
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Reader Back dependencies
+        run: cd wn-jjklrt-read-dev/back && npm ci
+
+      - name: Install Reader Front dependencies
+        run: cd wn-jjklrt-read-dev/front && npm ci
+
+      - name: Initialize database schema (Writer tables)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-write-dev/database
+          psql -h localhost -U postgres -d db_writer -p 5432 -f schema.sql
+
+      - name: Initialize database migrations (Reader views)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-read-dev/back/data/migrations
+          for file in *.sql; do
+            echo "Executing $file"
+            psql -h localhost -U postgres -d db_writer -p 5432 -f "$file"
+          done
+
+      - name: Create .env for Reader Back
+        run: |
+          cat > wn-jjklrt-read-dev/back/.env << EOF
+          PORT=8002
+          DB_HOST=127.0.0.1
+          DB_PORT=5432
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=db_writer
+          NODE_ENV=development
+          CLIENT_URL=http://localhost:3000
+          EOF
+
+      - name: Start Reader Back (port 8002)
+        run: |
+          cd wn-jjklrt-read-dev/back && npm run dev &
+          echo "Waiting for Reader Back on tcp:8002..."
+          npx --yes wait-on tcp:8002 --timeout 60000
+
+      - name: Start Reader Front (port 3000)
+        run: |
+          cd wn-jjklrt-read-dev/front && npm run dev &
+          echo "Waiting for Reader Front on tcp:3000..."
+          npx --yes wait-on tcp:3000 --timeout 60000
+
+      - name: Install Playwright browsers
+        run: cd wn-jjklrt-read-dev/front && npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: cd wn-jjklrt-read-dev/front && npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-reader
+          path: wn-jjklrt-read-dev/front/playwright-report/
+          retention-days: 7
+
+  # Job 7: E2E Tests Writer Frontend
+  e2e-writer:
+    name: E2E Tests Writer Frontend
+    runs-on: ubuntu-latest
+    needs: [test-writer-back, test-writer-front]
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: db_writer
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install Writer Back dependencies
+        run: cd wn-jjklrt-write-dev/write-back && npm ci
+
+      - name: Install Writer Front dependencies
+        run: cd wn-jjklrt-write-dev/write-front && npm ci
+
+      - name: Initialize database schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          cd wn-jjklrt-write-dev/database
+          psql -h localhost -U postgres -d db_writer -p 5432 -f schema.sql
+
+      - name: Create .env for Writer Back
+        run: |
+          cat > wn-jjklrt-write-dev/write-back/.env << EOF
+          PORT=8001
+          DB_HOST=127.0.0.1
+          DB_PORT=5432
+          DB_USER=postgres
+          DB_PASSWORD=postgres
+          DB_NAME=db_writer
+          NODE_ENV=development
+          CLIENT_URL=http://localhost:3001
+          EOF
+
+      - name: Start Writer Back (port 8001)
+        run: |
+          cd wn-jjklrt-write-dev/write-back && npm run dev &
+          echo "Waiting for Writer Back on tcp:8001..."
+          npx --yes wait-on tcp:8001 --timeout 60000
+
+      - name: Start Writer Front (port 3001)
+        env:
+          PORT: 3001
+          NEXT_PUBLIC_API_URL: http://localhost:8001
+        run: |
+          cd wn-jjklrt-write-dev/write-front && npm run dev &
+          echo "Waiting for Writer Front on tcp:3001..."
+          npx --yes wait-on tcp:3001 --timeout 60000
+
+      - name: Install Playwright browsers
+        run: cd wn-jjklrt-write-dev/write-front && npx playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8001
+        run: cd wn-jjklrt-write-dev/write-front && npx playwright test
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-writer
+          path: wn-jjklrt-write-dev/write-front/playwright-report/
+          retention-days: 7
+
+  # Job 8: Build Success Notification
   build-success:
     name: Build Success
     runs-on: ubuntu-latest
     needs:
-      [test-writer-back, test-writer-front, test-reader-back, test-reader-front]
+      [
+        test-writer-back,
+        test-writer-front,
+        test-reader-back,
+        test-reader-front,
+        e2e-reader,
+        e2e-writer,
+      ]
 
     steps:
       - name: Success message
         run: |
           echo "✅ All tests passed successfully!"
-          echo "✅ Writer Backend: OK"
-          echo "✅ Writer Frontend: OK"
-          echo "✅ Reader Backend: OK"
-          echo "✅ Reader Frontend: OK"
+          echo "✅ Writer Backend (unit + integration): OK"
+          echo "✅ Writer Frontend (unit): OK"
+          echo "✅ Writer Frontend (E2E Playwright): OK"
+          echo "✅ Reader Backend (unit + integration): OK"
+          echo "✅ Reader Frontend (unit): OK"
+          echo "✅ Reader Frontend (E2E Playwright): OK"

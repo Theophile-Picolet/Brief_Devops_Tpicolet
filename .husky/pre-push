@@ -1,1 +1,33 @@
-npm test
+#!/bin/sh
+set -e
+
+# Arrête database-test à la fin (qu'il y ait succès ou échec)
+# Les autres services (writer-back, reader-back, fronts) restent actifs pour le dev
+cleanup() {
+  echo ""
+  echo "🧹 Arrêt de la base de données de test..."
+  docker compose stop database-test 2>/dev/null || true
+}
+trap cleanup EXIT INT TERM
+
+echo "🚀 Démarrage des conteneurs nécessaires aux tests..."
+# database-test (port 5433) : pour les tests d'intégration Jest (.env.test)
+# database + services applicatifs : pour les tests E2E Playwright (ports 8001, 8002, 3000, 3001)
+docker compose up -d --wait \
+  database \
+  database-test \
+  writer-back \
+  reader-back \
+  writer-front \
+  reader-front
+
+echo ""
+echo "🧪 Tests unitaires et d'intégration (Jest)..."
+npm run test:unit
+
+echo ""
+echo "🎭 Tests E2E (Playwright)..."
+npm run test:e2e
+
+echo ""
+echo "✅ Tous les tests ont réussi — push autorisé !"
