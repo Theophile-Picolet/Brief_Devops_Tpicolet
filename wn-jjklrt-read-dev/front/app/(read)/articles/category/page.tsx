@@ -66,7 +66,7 @@ export default function CategoryPage() {
   const articlesOfCategory = async (category: string) => {
     try {
       const res = await fetch(
-        `http://localhost:8002/api/articles/category/${encodeURIComponent(category)}`,
+        `https://reader-backend-wfqo.onrender.com/api/articles/category/${encodeURIComponent(category)}`,
       );
 
       const data = await res.json();

@@ -52,13 +52,16 @@ export default function publier() {
     try {
       // Slugifier le titre avant envoi
       const formToSend = { ...form, title: slugify(form.title) };
-      const res = await fetch("http://localhost:8001/api/articles", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const res = await fetch(
+        "https://writer-backend-x2sb.onrender.com/api/articles",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formToSend),
         },
-        body: JSON.stringify(formToSend),
-      });
+      );
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         setErrors(data?.errors ?? [data?.error ?? "Erreur inconnue"]);

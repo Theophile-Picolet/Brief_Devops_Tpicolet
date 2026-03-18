@@ -21,7 +21,7 @@ const Comments: React.FC<CommentsProps> = ({ articleTitle }) => {
       setLoading(true);
       try {
         const res = await fetch(
-          `http://localhost:8002/api/articles/${encodeURIComponent(articleTitle)}/comments`,
+          `https://reader-backend-wfqo.onrender.com/api/articles/${encodeURIComponent(articleTitle)}/comments`,
         );
         if (!res.ok)
           throw new Error("Erreur lors du chargement des commentaires");

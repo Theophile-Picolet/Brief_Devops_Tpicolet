@@ -3,7 +3,7 @@
 import { useState } from "react";
 import styles from "./page.module.css";
 
-const API = "http://localhost:8001";
+const API = "https://writer-backend-x2sb.onrender.com";
 
 // Fonction de slugification
 function slugify(str: string) {

@@ -50,7 +50,7 @@ const AddCommentButton: React.FC<AddCommentButtonProps> = ({
     setLoading(true);
     setError(null);
     try {
-      const url = `http://localhost:8002/api/articles/${encodeURIComponent(articleTitle)}/comments`;
+      const url = `https://reader-backend-wfqo.onrender.com/api/articles/${encodeURIComponent(articleTitle)}/comments`;
       const payload = { description };
 
       console.info("[AddComment] API call:", { url, payload });

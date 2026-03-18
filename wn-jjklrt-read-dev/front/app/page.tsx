@@ -19,7 +19,9 @@ export default function Home() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const res = await fetch("http://localhost:8002/api/articles");
+        const res = await fetch(
+          "https://reader-backend-wfqo.onrender.com/api/articles",
+        );
         if (!res) {
           setArticles([]);
           setLoading(false);
