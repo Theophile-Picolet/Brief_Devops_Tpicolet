@@ -19,7 +19,7 @@ export default async function OneArticlePage({
   const { title } = await params;
 
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/articles/${encodeURIComponent(title)}`,
+    `https://writer-backend-x2sb.onrender.com/api/articles/${encodeURIComponent(title)}`,
     {
       cache: "no-store",
     },
