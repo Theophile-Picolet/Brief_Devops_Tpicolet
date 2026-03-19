@@ -12,7 +12,7 @@ type Article = {
   published_at: string;
 };
 
-const API = "https://writer-backend-x2sb.onrender.com";
+const API = "http://localhost:8001";
 
 export default function DeleteArticle() {
   const [lookup, setLookup] = useState("");

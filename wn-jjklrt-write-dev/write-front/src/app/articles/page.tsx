@@ -16,7 +16,7 @@ export default function Articles() {
   const [articles, setArticles] = useState<Article[]>([]);
   useEffect(() => {
     const fetchAricles = async () => {
-      const res = await fetch("https://writer-backend-x2sb.onrender.com/api/articles");
+      const res = await fetch("http://localhost:8001/api/articles");
       if (!res.ok) {
         return;
       }

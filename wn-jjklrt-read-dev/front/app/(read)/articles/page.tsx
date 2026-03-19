@@ -16,7 +16,7 @@ export default function ArticlesPage() {
 
   useEffect(() => {
     // Utiliser le paramètre recent pour trier les articles par date
-    fetch("https://reader-backend-wfqo.onrender.com/api/articles?recent=true")
+    fetch("http://localhost:8002/api/articles?recent=true")
       .then((res) => {
         if (!res.ok) {
           // Si 404, retourner un tableau vide

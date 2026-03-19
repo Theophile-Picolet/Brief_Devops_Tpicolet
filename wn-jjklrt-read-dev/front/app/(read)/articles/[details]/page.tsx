@@ -24,8 +24,7 @@ export default function ArticleDetailPage() {
 
   const params = useParams();
   const articleTitle = params.details as string;
-  const articlesBaseUrl =
-    "https://reader-backend-wfqo.onrender.com/api/articles";
+  const articlesBaseUrl = "http://localhost:8002/api/articles";
   const encodedTitle = articleTitle ? encodeURIComponent(articleTitle) : "";
   const articleUrl = encodedTitle ? `${articlesBaseUrl}/${encodedTitle}` : "";
   const favoriteUrl = articleUrl ? `${articleUrl}/favorite` : "";

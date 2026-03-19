@@ -19,7 +19,7 @@ export default async function OneArticlePage({
   const { title } = await params;
 
   const res = await fetch(
-    `https://writer-backend-x2sb.onrender.com/api/articles/${encodeURIComponent(title)}`,
+    `http://localhost:8001/api/articles/${encodeURIComponent(title)}`,
     {
       cache: "no-store",
     },
